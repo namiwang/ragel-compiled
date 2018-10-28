@@ -1,0 +1,4494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.10" />
+<title>Ragel State Machine Compiler User Guide</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(3);
+/*]]>*/
+</script>
+</head>
+<body class="book">
+<div id="header">
+<h1>Ragel State Machine Compiler User Guide</h1>
+<span id="author">Adrian Thurston</span><br />
+<span id="email"><code>&lt;<a href="mailto:thurston@colm.net">thurston@colm.net</a>&gt;</code></span><br />
+<span id="revdate">Ragel Version 7.0</span>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="literalblock">
+<div class="title">License</div>
+<div class="content">
+<pre><code>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</code></pre>
+</div></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_abstract">1.1. Abstract</h3>
+<div class="paragraph"><p>In today&#8217;s computing landscape, regular expressions are used heavily for the
+purpose of specifying parsers. They are normally treated as black boxes, linked
+together with program logic. User code is executed in between invocations of
+the regular expression engine. To add code before a pattern terminates, the
+programmer is required to break patterns and paste them back together with
+program logic. The more inline code needed, the less the advantages of regular
+expressions are seen.</p></div>
+<div class="paragraph"><p>Ragel is a software development tool that allows user code to be embedded into
+the transitions of a regular expression&#8217;s corresponding state machine,
+eliminating the need to switch from the regular expression engine to the user
+code execution environment, and then back again. As a result, expressions can
+be maximally continuous. One is free to specify an entire parser using a single
+regular expression. The single-expression model affords concise and elegant
+descriptions of languages and the generation of very simple, fast and robust
+code. Ragel compiles executable finite state machines from a high level regular
+language notation. Ragel targets C, C++, Objective-C, D, Go, GNU ASM x86-64,
+Java, Ruby, C#, OCaml, Crack, Rust, Julia and JavaScript</p></div>
+<div class="paragraph"><p>In addition to building state machines from regular expressions, Ragel allows
+the programmer to directly specify state machines with state charts. These two
+notations may be freely combined. There are also facilities for controlling
+nondeterminism in the resulting machines and building scanners using patterns
+that themselves have embedded actions. Ragel can produce code that is small and
+runs very fast. Ragel can handle integer-sized alphabets and can compile very
+large state machines.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_motivation">1.2. Motivation</h3>
+<div class="paragraph"><p>When a programmer is faced with the task of producing a parser for a
+context-free language, there are many tools to choose from. It is quite common
+to generate useful and efficient parsers for programming languages from a
+formal grammar. It is also quite common for programmers to avoid such tools
+when making parsers for simple computer languages, such as file formats and
+communication protocols.  Such languages are often regular, and tools for
+processing the context-free languages are viewed as too heavyweight for the
+purpose of parsing regular languages. The extra run-time effort required for
+supporting the recursive nature of context-free languages is wasted.</p></div>
+<div class="paragraph"><p>When we turn to the regular expression-based parsing tools, such as Lex, Re2C,
+and scripting languages such as Sed, Awk and Perl we find that they are split
+into two levels: a regular expression matching engine and some kind of program
+logic for linking patterns together.  For example, a Lex program is composed of
+sets of regular expressions. The implied program logic repeatedly attempts to
+match a pattern in the current set. When a match is found, the associated user
+code executed. It requires the user to consider a language as a sequence of
+independent tokens. Scripting languages and regular expression libraries allow
+one to link patterns together using arbitrary program code.  This is very
+flexible and powerful; however, we can be more concise and clear if we avoid
+gluing together regular expressions with if statements and while loops.</p></div>
+<div class="paragraph"><p>This model of execution, where the runtime alternates between regular
+expression matching and user code execution places restrictions on when
+action code may be executed. Since action code can only be associated with
+complete patterns, any action code that must be executed before an entire
+pattern is matched requires that the pattern be broken into smaller units.
+Instead of being forced to disrupt the regular expression syntax and write
+smaller expressions, it is desirable to retain a single expression and embed
+code for performing actions directly into the transitions that move over the
+characters. After all, capable programmers are astutely aware of the machinery
+underlying their programs, so why not provide them with access to that
+machinery? To achieve this, we require an action execution model for associating
+code with the sub-expressions of a regular expression in a way that does not
+disrupt its syntax.</p></div>
+<div class="paragraph"><p>The primary goal of Ragel is to provide developers with an ability to embed
+actions into the transitions and states of a regular expression&#8217;s state machine
+in support of the definition of entire parsers or large sections of parsers
+using a single regular expression.  From the regular expression we gain a clear
+and concise statement of our language. From the state machine we obtain a very
+fast and robust executable that lends itself to many kinds of analysis and
+visualization.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_overview">1.3. Overview</h3>
+<div class="paragraph"><p>Ragel is a language for specifying state machines. The Ragel program is a
+compiler that assembles a state machine definition to executable code.  Ragel
+is based on the principle that any regular language can be converted to a
+deterministic finite state automaton. Since every regular language has a state
+machine representation and vice versa, the terms regular language and state
+machine (or just machine) will be used interchangeably in this document.</p></div>
+<div class="paragraph"><p>Ragel outputs machines to C, C++, Objective-C, D, Go, GNU ASM x86-64, Java,
+Ruby, C#, OCaml, Crack, Rust, Julia and JavaScript code. The output is
+designed to be generic and is not bound to any particular input or processing
+method. A Ragel machine expects to have data passed to it in buffer blocks.
+When there is no more input, the machine can be queried for acceptance.  In
+this way, a Ragel machine can be used to simply recognize a regular language
+like a regular expression library. By embedding code into the regular language,
+a Ragel machine can also be used to parse input.</p></div>
+<div class="paragraph"><p>The Ragel language has many operators for constructing and manipulating
+machines. Machines are built up from smaller machines, to bigger ones, to the
+final machine representing the language that needs to be recognized or parsed.</p></div>
+<div class="paragraph"><p>The core state machine construction operators are those found in most theory
+of computation textbooks. They date back to the 1950s and are widely studied.
+They are based on set operations and permit one to think of languages as a set
+of strings. They are Union, Intersection, Difference, Concatenation and Kleene
+Star. Put together, these operators make up what most people know as regular
+expressions. Ragel also provides a scanner construction operator
+and provides operators for explicitly constructing machines
+using a state chart method. In the state chart method, one joins machines
+together without any implied transitions and then explicitly specifies where
+epsilon transitions should be drawn.</p></div>
+<div class="paragraph"><p>The state machine manipulation operators are specific to Ragel. They allow the
+programmer to access the states and transitions of regular language&#8217;s
+corresponding machine. There are two uses of the manipulation operators. The
+first and primary use is to embed code into transitions and states, allowing
+the programmer to specify the actions of the state machine.</p></div>
+<div class="paragraph"><p>Ragel attempts to make the action embedding facility as intuitive as possible.
+To do so, a number of issues need to be addressed.  For example, when making a
+nondeterministic specification into a DFA using machines that have embedded
+actions, new transitions are often made that have the combined actions of
+several source transitions. Ragel ensures that multiple actions associated with
+a single transition are ordered consistently with respect to the order of
+reference and the natural ordering implied by the construction operators.</p></div>
+<div class="paragraph"><p>The second use of the manipulation operators is to assign priorities to
+transitions. Priorities provide a convenient way of controlling any
+nondeterminism introduced by the construction operators. Suppose two
+transitions leave from the same state and go to distinct target states on the
+same character. If these transitions are assigned conflicting priorities, then
+during the determinization process the transition with the higher priority will
+take precedence over the transition with the lower priority. The lower priority
+transition gets abandoned. The transitions would otherwise be combined into a new
+transition that goes to a new state that is a combination of the original
+target states. Priorities are often required for segmenting machines. The most
+common uses of priorities have been encoded into a set of simple operators
+that should be used instead of priority embeddings whenever possible.</p></div>
+<div class="paragraph"><p>For the purposes of embedding, Ragel divides transitions and states into
+different classes. There are four operators for embedding actions and
+priorities into the transitions of a state machine. It is possible to embed
+into entering transitions, finishing transitions, all transitions and leaving
+transitions. The embedding into leaving transitions is a special case.
+These transition embeddings get stored in the final states of a machine.  They
+are transferred to any transitions that are made going out of the machine by
+future concatenation or kleene star operations.</p></div>
+<div class="paragraph"><p>There are several more operators for embedding actions into states. Like the
+transition embeddings, there are various different classes of states that the
+embedding operators access. For example, one can access start states, final
+states or all states, among others. Unlike the transition embeddings, there are
+several different types of state action embeddings. These are executed at
+various different times during the processing of input. It is possible to embed
+actions that are executed on transitions into a state, on transitions out of a
+state, on transitions taken on the error event, or on transitions taken on the
+EOF event.</p></div>
+<div class="paragraph"><p>Within actions, it is possible to influence the behaviour of the state machine.
+The user can write action code that jumps or calls to another portion of the
+machine, changes the current character being processed, or breaks out of the
+processing loop. With the state machine calling feature Ragel can be used to
+parse languages that are not regular. For example, one can parse balanced
+parentheses by calling into a parser when an open parenthesis character is seen
+and returning to the state on the top of the stack when the corresponding
+closing parenthesis character is seen. More complicated context-free languages
+such as expressions in C are out of the scope of Ragel.</p></div>
+<div class="paragraph"><p>Ragel also provides a scanner construction operator that can be used to build
+scanners much the same way that Lex is used. The Ragel generated code, which
+relies on user-defined variables for backtracking, repeatedly tries to match
+patterns to the input, favouring longer patterns over shorter ones and patterns
+that appear ahead of others when the lengths of the possible matches are
+identical. When a pattern is matched the associated action is executed.</p></div>
+<div class="paragraph"><p>The key distinguishing feature between scanners in Ragel and scanners in Lex is
+that Ragel patterns may be arbitrary Ragel expressions and can therefore
+contain embedded code. With a Ragel-based scanner the user need not wait until
+the end of a pattern before user code can be executed.</p></div>
+<div class="paragraph"><p>Scanners do take Ragel out of the domain of pure state machines and require the
+user to maintain the backtracking related variables.  However, scanners
+integrate well with regular state machine instantiations. They can be called to
+or jumped to only when needed, or they can be called out of or jumped out of
+when a simpler, pure state machine model is appropriate.</p></div>
+<div class="paragraph"><p>Two types of output code style are available. Ragel can produce a table-driven
+machine or a directly executable machine. The directly executable machine is
+much faster than the table-driven. On the other hand, the table-driven machine
+is more compact and less demanding on the host language compiler. It is better
+suited to compiling large state machines.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_related_work">1.4. Related Work</h3>
+<div class="sect3">
+<h4 id="_lex">1.4.1. Lex</h4>
+<div class="paragraph"><p>Lex is perhaps the best-known tool for constructing parsers from regular
+expressions. In the Lex processing model, generated code attempts to match one
+of the user&#8217;s regular expression patterns, favouring longer matches over
+shorter ones. Once a match is made it then executes the code associated with
+the pattern and consumes the matching string.  This process is repeated until
+the input is fully consumed.</p></div>
+<div class="paragraph"><p>Through the use of start conditions, related sets of patterns may be defined.
+The active set may be changed at any time.  This allows the user to define
+different lexical regions. It also allows the user to link patterns together by
+requiring that some patterns come before others.  This is quite like a
+concatenation operation. However, use of Lex for languages that require a
+considerable amount of pattern concatenation is inappropriate. In such cases a
+Lex program deteriorates into a manually specified state machine, where start
+conditions define the states and pattern actions define the transitions.  Lex
+is therefore best suited to parsing tasks where the language to be parsed can
+be described in terms of regions of tokens.</p></div>
+<div class="paragraph"><p>Lex is useful in many scenarios and has undoubtedly stood the test of time.
+There are, however, several drawbacks to using Lex.  Lex can impose too much
+overhead for parsing applications where buffering is not required because all
+the characters are available in a single string.  In these cases there is
+structure to the language to be parsed and a parser specification tool can
+help, but employing a heavyweight processing loop that imposes a stream
+pull model and dynamic input buffer allocation is inappropriate.  An
+example of this kind of scenario is the conversion of floating point numbers
+contained in a string to their corresponding numerical values.</p></div>
+<div class="paragraph"><p>Another drawback is the very issue that Ragel attempts to solve.
+It is not possible to execute a user action while
+matching a character contained inside a pattern. For example, if scanning a
+programming language and string literals can contain newlines which must be
+counted, a Lex user must break up a string literal pattern so as to associate
+an action with newlines. This forces the definition of a new start condition.
+Alternatively the user can reprocess the text of the matched string literal to
+count newlines.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_re2c">1.4.2. Re2C</h4>
+<div class="paragraph"><p>The Re2C program defines an input processing model similar to that of Lex.
+Re2C focuses on making generated state machines run very fast and
+integrate easily into any program, free of dependencies.  Re2C generates
+directly executable code and is able to claim that generated parsers run nearly
+as fast as their hand-coded equivalents.  This is very important for user
+adoption, as programmers are reluctant to use a tool when a faster alternative
+exists.  A consideration to ease of use is also important because developers
+need the freedom to integrate the generated code as they see fit.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_regular_expression_libraries">1.4.3. Regular Expression Libraries</h4>
+<div class="paragraph"><p>Many scripting languages provide ways of composing parsers by linking regular
+expressions using program logic. For example, Sed and Awk are two established
+Unix scripting tools that allow the programmer to exploit regular expressions
+for the purpose of locating and extracting text of interest. High-level
+programming languages such as Perl, Python, PHP and Ruby all provide regular
+expression libraries that allow the user to combine regular expressions with
+arbitrary code.</p></div>
+<div class="paragraph"><p>In addition to supporting the linking of regular expressions with arbitrary
+program logic, the Perl programming language permits the embedding of code into
+regular expressions. Perl embeddings do not translate into the embedding of
+code into deterministic state machines. Perl regular expressions are in fact
+not fully compiled to deterministic machines when embedded code is involved.
+They are instead interpreted and involve backtracking. This is shown by the
+following Perl program. When it is fed the input <code>abcd</code> the interpreter
+attempts to match the first alternative, printing <code>a1 b1</code>.  When this
+possibility fails it backtracks and tries the second possibility, printing
+<code>a2 b2</code>, at which point it succeeds.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>print "YES\n" if ( &lt;STDIN&gt; =~
+        /( a (?{ print "a1 "; }) b (?{ print "b1 "; }) cX ) |
+         ( a (?{ print "a2 "; }) b (?{ print "b2 "; }) cd )/x )</code></pre>
+</div></div>
+<div class="paragraph"><p>In Ragel there is no regular expression interpreter. Aside from the scanner
+operator, all Ragel expressions are made into deterministic machines and the
+run time simply moves from state to state as it consumes input. An equivalent
+parser expressed in Ragel would attempt both of the alternatives concurrently,
+printing <code>a1 a2 b1 b2</code>.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_constructing_state_machines">2. Constructing State Machines</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_ragel_state_machine_specifications">2.1. Ragel State Machine Specifications</h3>
+<div class="paragraph"><p>A Ragel input file consists of a program in the host language that contains
+embedded machine specifications.  Ragel normally passes input straight to
+output.  When it sees a machine specification it stops to read the Ragel
+statements and possibly generate code in place of the specification. Afterwards
+it continues to pass input through.  There can be any number of FSM
+specifications in an input file. A multi-line FSM spec starts with <code>%%{</code> and
+ends with <code>}%%</code>. A single-line FSM spec starts with <code>%%</code> and ends at the
+first newline.</p></div>
+<div class="paragraph"><p>While Ragel is looking for FSM specifications it does basic lexical analysis on
+the surrounding input. It interprets literal strings and comments so a
+<code>%%</code> sequence in either of those will not trigger the parsing of an FSM
+specification. Ragel does not pass the input through any preprocessor nor does it
+interpret preprocessor directives itself so includes, defines and ifdef logic
+cannot be used to alter the parse of a Ragel input file. It is therefore not
+possible to use an <code>#if 0</code> directive to comment out a machine as is
+commonly done in C code. As an alternative, a machine can be prevented from
+causing any generated output by commenting out write statements.</p></div>
+<div class="paragraph"><p>In the example below, a multi-line specification is used to define the machine
+and single line specifications are used to trigger the writing of the machine
+data and execution code. This example shows parsing of a command line argument.</p></div>
+<div class="listingblock">
+<div class="title">Parsing Command Line Args</div>
+<div class="content">
+<pre><code>#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+
+%%{
+    machine foo;
+    main :=
+        ( 'foo' | 'bar' )
+        0 @{ res = 1; };
+}%%
+
+%% write data;
+
+int main( int argc, char **argv )
+{
+    int cs, res = 0;
+    if ( argc &gt; 1 ) {
+        char *p = argv[1];
+        char *pe = p + strlen(p) + 1;
+        %% write init;
+        %% write exec;
+    }
+    printf("result = %i\n", res );
+    return 0;
+}</code></pre>
+</div></div>
+<div class="sect3">
+<h4 id="_naming_ragel_blocks">2.1.1. Naming Ragel Blocks</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>machine fsm_name;</code></pre>
+</div></div>
+<div class="paragraph"><p>The <code>machine</code> statement gives the name of the FSM. If present in a
+specification, this statement must appear first. If a machine specification
+does not have a name then Ragel uses the previous specification name.  If no
+previous specification name exists then this is an error. Because FSM
+specifications persist in memory, a machine&#8217;s statements can be spread across
+multiple machine specifications.  This allows one to break up a machine across
+several files or draw in statements that are common to multiple machines using
+the <code>include</code> statement.</p></div>
+</div>
+<div class="sect3">
+<h4 id="definition">2.1.2. Machine Definition</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>&lt;name&gt; = &lt;expression&gt;;</code></pre>
+</div></div>
+<div class="paragraph"><p>The machine definition statement associates an FSM expression with a name. Machine
+expressions assigned to names can later be referenced in other expressions. A
+definition statement on its own does not cause any states to be generated. It is simply a
+description of a machine to be used later. States are generated only when a definition is
+instantiated, which happens when a definition is referenced in an instantiated
+expression.</p></div>
+</div>
+<div class="sect3">
+<h4 id="instantiation">2.1.3. Machine Instantiation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>&lt;name&gt; := &lt;expression&gt;;</code></pre>
+</div></div>
+<div class="paragraph"><p>The machine instantiation statement generates a set of states representing an
+expression. Each instantiation generates a distinct set of states.  The
+starting state of the instantiation is written in the data section of the
+generated code using the instantiation name.  If a machine named <code>main</code> is
+instantiated, its start state is used as the specification&#8217;s start state and is
+assigned to the <code>cs</code> variable by the <code>write init</code> command. If no <code>main</code>
+machine is given, the start state of the last machine instantiation to appear
+is used as the specification&#8217;s start state.</p></div>
+<div class="paragraph"><p>From outside the execution loop, control may be passed to any machine by
+assigning the entry point to the <code>cs</code> variable.  From inside the execution
+loop, control may be passed to any machine instantiation using <code>fcall</code>,
+<code>fgoto</code> or <code>fnext</code> statements.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_including_ragel_code">2.1.4. Including Ragel Code</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>include FsmName "inputfile.rl";</code></pre>
+</div></div>
+<div class="paragraph"><p>The <code>include</code> statement can be used to draw in the statements of another FSM
+specification. Both the name and input file are optional, however at least one
+must be given. Without an FSM name, the given input file is searched for an FSM
+of the same name as the current specification. Without an input file, the
+current file is searched for a machine of the given name. If both are present,
+the given input file is searched for a machine of the given name.</p></div>
+<div class="paragraph"><p>Ragel searches for included files from the location of the current file.
+Additional directories can be added to the search path using the <code>-I</code> option.</p></div>
+</div>
+<div class="sect3">
+<h4 id="import">2.1.5. Importing Definitions</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>import "inputfile.h";</code></pre>
+</div></div>
+<div class="paragraph"><p>The <code>import</code> statement scrapes a file for sequences of tokens that match the
+following forms. Ragel treats these forms as state machine definitions.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>name <em>=</em> number</code>
+</p>
+</li>
+<li>
+<p>
+<code>name <em>=</em> lit_string</code>
+</p>
+</li>
+<li>
+<p>
+<code><em>define</em> name number</code>
+</p>
+</li>
+<li>
+<p>
+<code><em>define</em> name lit_string</code>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>If the input file is a Ragel program then tokens inside any Ragel
+specifications are ignored. See the section on <a href="#export">Write Exports</a> for a
+description of exporting machine definitions.</p></div>
+<div class="paragraph"><p>Ragel searches for imported files from the location of the current file.
+Additional directories can be added to the search path using the <code>-I</code> option.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lexing">2.2. Lexical Analysis of a Ragel Block</h3>
+<div class="paragraph"><p>Within a machine specification the following lexical rules apply to the input.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+The <code>#</code> symbol begins a comment that terminates at the next newline.
+</p>
+</li>
+<li>
+<p>
+The symbols <code>""</code>, <code>''</code>, <code>//</code>, and <code>[]</code> behave as the
+delimiters of literal strings. Within them, the following escape sequences
+are interpreted:
+</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>\0 \a \b \t \n \v \f \r</code></pre>
+</div></div>
+<div class="paragraph"><p>A backslash at the end of a line joins the following line onto the current. A
+backslash preceding any other character removes special meaning. This applies
+to terminating characters and to special characters in regular expression
+literals. As an exception, regular expression literals do not support escape
+sequences as the operands of a range within a list. See the bullet on regular
+expressions in <a href="#basic">Basic Machines</a>.</p></div>
+</li>
+<li>
+<p>
+The symbols <code>{}</code> delimit a block of host language code that will be
+embedded into the machine as an action.  Within the block of host language
+code, basic lexical analysis of comments and strings is done in order to
+correctly find the closing brace of the block. With the exception of FSM
+commands embedded in code blocks, the entire block is preserved as is for
+identical reproduction in the output code.
+</p>
+</li>
+<li>
+<p>
+The pattern <code>[+-]?[0-9]+</code> denotes an integer in decimal format.
+Integers used for specifying machines may be negative only if the alphabet type
+is signed. Integers used for specifying priorities may be positive or negative.
+</p>
+</li>
+<li>
+<p>
+The pattern <code>0x[0-9A-Fa-f]+</code> denotes an integer in hexadecimal
+format.
+</p>
+</li>
+<li>
+<p>
+The keywords are <code>access</code>, <code>action</code>, <code>alphtype</code>,
+<code>getkey</code>, <code>write</code>, <code>machine</code> and <code>include</code>.
+</p>
+</li>
+<li>
+<p>
+The pattern <code>[a-zA-Z_][a-zA-Z_0-9]*</code> denotes an identifier.
+</p>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Any amount of whitespace may separate tokens.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="basic">2.3. Basic Machines</h3>
+<div class="paragraph"><p>The basic machines are the base operands of regular language expressions. They
+are the smallest unit to which machine construction and manipulation operators
+can be applied.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>'hello'</code>&#8201;&#8212;&#8201;Concatenation Literal. Produces a machine that matches
+the sequence of characters in the quoted string. If there are 5 characters
+there will be 6 states chained together with the characters in the string. See
+the section <a href="#lexing">Lexical Analysis</a> for information on valid escape
+sequences.
+</p>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="bmconcat.png" alt="bmconcat.png" />
+</div>
+</div>
+<div class="paragraph"><p>It is possible to make a concatenation literal case-insensitive by appending an
+<code>i</code> to the string, for example <code>'cmd'i</code>.</p></div>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>"hello"</code>&#8201;&#8212;&#8201;Identical to the single quoted version.
+</p>
+</li>
+<li>
+<p>
+<code>[hello]</code>&#8201;&#8212;&#8201;Or Expression. Produces a union of characters.  There
+will be two states with a transition for each unique character between the two
+states. The <code>[]</code> delimiters behave like the quotes of a literal string. For
+example, <code>[ \t]</code> means tab or space. The <code>or</code> expression supports
+character ranges with the <code>-</code> symbol as a separator. The meaning of the union
+can be negated using an initial <code>^</code> character as in standard regular
+expressions. See <a href="#lexing">Lexical Analysis</a> for information on valid escape
+sequences in <code>or</code> expressions.
+</p>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="bmor.png" alt="bmor.png" />
+</div>
+</div>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>''</code>, <code>""</code>, and <code>[]</code>&#8201;&#8212;&#8201;Zero Length Machine.  Produces a machine
+that matches the zero length string. Zero length machines have one state that
+is both a start state and a final state.
+</p>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="bmnull.png" alt="bmnull.png" />
+</div>
+</div>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>42</code>&#8201;&#8212;&#8201;Numerical Literal. Produces a two state machine with one
+transition on the given number. The number may be in decimal or hexadecimal
+format and should be in the range allowed by the alphabet type. The minimum and
+maximum values permitted are defined by the host machine that Ragel is compiled
+on. For example, numbers in a <code>short</code> alphabet on an i386 machine should be in
+the range <code>-32768</code> to <code>32767</code>.
+</p>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="bmnum.png" alt="bmnum.png" />
+</div>
+</div>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>/simple_regex/</code>&#8201;&#8212;&#8201;Regular Expression. Regular expressions are
+parsed as a series of expressions that are concatenated together. Each
+concatenated expression may be a literal character, the <code>any</code> character
+specified by the <code>.</code> symbol, or a union of characters specified by the <code>[]</code>
+delimiters. If the first character of a union is <code>^</code> then it matches any
+character not in the list. Within a union, a range of characters can be given
+by separating the first and last characters of the range with the <code>-</code> symbol.
+Each concatenated machine may have repetition specified by following it with
+the <code>*</code> symbol. The standard escape sequences described in <a href="#lexing">Lexical Analysis</a> are supported everywhere in regular expressions except as the
+operands of a range within in a list. This notation also supports the <code>i</code>
+trailing option. Use it to produce case-insensitive machines, as in <code>/GET/i</code>.
+</p>
+<div class="paragraph"><p>Ragel does not support very complex regular expressions because the desired
+results can always be achieved using the more general machine construction
+operators listed in <a href="#machconst">Regular Language Operators</a>. The
+following diagram shows the result of compiling <code>/ab*[c-z].*[123]/</code>. Note that
+in the diagram, <code>DEF</code> represents the default transition, which is taken if no
+other transition can be taken.</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="bmregex.png" alt="bmregex.png" />
+</div>
+</div>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>'a' .. 'z'</code>&#8201;&#8212;&#8201;Range. Produces a machine that matches any
+characters in the specified range.  Allowable upper and lower bounds of the
+range are concatenation literals of length one and numerical literals.  For
+example, <code>0x10..0x20</code>, <code>0..63</code>, and <code>'a'..'z'</code> are valid ranges.
+The bounds should be in the range allowed by the alphabet type.
+</p>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="bmrange.png" alt="bmrange.png" />
+</div>
+</div>
+</li>
+</ul></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>variable_name</code>&#8201;&#8212;&#8201;Lookup the machine definition assigned to the
+variable name given and use an instance of it. See <a href="#definition">Machine Definition</a> for an important note on what it means to reference a variable
+name.
+</p>
+</li>
+<li>
+<p>
+<code>builtin_machine</code>&#8201;&#8212;&#8201;There are several built-in machines available
+for use. They are all two-state machines for the purpose of matching common
+classes of characters. They are:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>any</code>&#8201;&#8212;&#8201;Any character in the alphabet.
+</p>
+</li>
+<li>
+<p>
+<code>ascii</code>&#8201;&#8212;&#8201;Ascii characters. <code>0..127</code>
+</p>
+</li>
+<li>
+<p>
+<code>extend</code>&#8201;&#8212;&#8201;Ascii extended characters. This is the range
+<code>-128..127</code> for signed alphabets and the range <code>0..255</code> for unsigned
+alphabets.
+</p>
+</li>
+<li>
+<p>
+<code>alpha</code>&#8201;&#8212;&#8201;Alphabetic characters. <code>[A-Za-z]</code>
+</p>
+</li>
+<li>
+<p>
+<code>digit</code>&#8201;&#8212;&#8201;Digits. <code>[0-9]</code>
+</p>
+</li>
+<li>
+<p>
+<code>alnum</code>&#8201;&#8212;&#8201;Alpha numerics. <code>[0-9A-Za-z]</code>
+</p>
+</li>
+<li>
+<p>
+<code>lower</code>&#8201;&#8212;&#8201;Lowercase characters. <code>[a-z]</code>
+</p>
+</li>
+<li>
+<p>
+<code>upper</code>&#8201;&#8212;&#8201;Uppercase characters. <code>[A-Z]</code>
+</p>
+</li>
+<li>
+<p>
+<code>xdigit</code>&#8201;&#8212;&#8201;Hexadecimal digits. <code>[0-9A-Fa-f]</code>
+</p>
+</li>
+<li>
+<p>
+<code>cntrl</code>&#8201;&#8212;&#8201;Control characters. <code>0..31</code>, <code>127</code>
+</p>
+</li>
+<li>
+<p>
+<code>graph</code>&#8201;&#8212;&#8201;Graphical characters. <code>[!-~]</code>
+</p>
+</li>
+<li>
+<p>
+<code>print</code>&#8201;&#8212;&#8201;Printable characters. <code>[ -~]</code>
+</p>
+</li>
+<li>
+<p>
+<code>punct</code>&#8201;&#8212;&#8201;Punctuation. Graphical characters that are not alphanumerics.
+</p>
+<div class="literalblock">
+<div class="content">
+<pre><code>[!-/:-@\[-`{-~]</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+<code>space</code>&#8201;&#8212;&#8201;Whitespace. <code>[\t\v\f\n\r ]</code>
+</p>
+</li>
+<li>
+<p>
+<code>zlen</code>&#8201;&#8212;&#8201;Zero length string. <code>""</code>
+</p>
+</li>
+<li>
+<p>
+<code>empty</code>&#8201;&#8212;&#8201;Empty set. Matches nothing. <code>^any</code>
+</p>
+</li>
+</ul></div>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_operator_precedence">2.4. Operator Precedence</h3>
+<div class="paragraph"><p>The following table shows operator precedence from lowest to highest. Operators
+in the same precedence group are evaluated from left to right.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="100%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+<tbody>
+<tr>
+<td align="center" valign="top"><p class="table">1</p></td>
+<td align="left" valign="top"><p class="table"><code>,</code></p></td>
+<td align="left" valign="top"><p class="table">Join</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">2</p></td>
+<td align="left" valign="top"><p class="table"><code>| &amp; - --</code></p></td>
+<td align="left" valign="top"><p class="table">Union, Intersection and Subtraction</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">3</p></td>
+<td align="left" valign="top"><p class="table"><code>. &lt;: :&gt; :&gt;&gt;</code></p></td>
+<td align="left" valign="top"><p class="table">Concatenation</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">4</p></td>
+<td align="left" valign="top"><p class="table"><code>:</code></p></td>
+<td align="left" valign="top"><p class="table">Label</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">5</p></td>
+<td align="left" valign="top"><p class="table"><code>-&gt;</code></p></td>
+<td align="left" valign="top"><p class="table">Epsilon Transition</p></td>
+</tr>
+<tr>
+<td rowspan="6" align="center" valign="middle"><p class="table">6</p></td>
+<td align="left" valign="top"><p class="table"><code>&gt;  @  $  %</code></p></td>
+<td align="left" valign="top"><p class="table">Transitions Actions and Priorities</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>&gt;/  $/  %/  &lt;/  @/  &lt;&gt;/</code></p></td>
+<td align="left" valign="top"><p class="table">EOF Actions</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>&gt;!  $!  %!  &lt;!  @!  &lt;&gt;!</code></p></td>
+<td align="left" valign="top"><p class="table">Global Error Actions</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>&gt;^  $^  %^  &lt;^  @^  &lt;&gt;^</code></p></td>
+<td align="left" valign="top"><p class="table">Local Error Actions</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>&gt;~  $~  %~  &lt;~  @~  &lt;&gt;~</code></p></td>
+<td align="left" valign="top"><p class="table">To-State Actions</p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table"><code>&gt;*  $*  %*  &lt;*  @*  &lt;&gt;*</code></p></td>
+<td align="left" valign="top"><p class="table">From-State Action</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">7</p></td>
+<td align="left" valign="top"><p class="table"><code>* ** ? + {n} {,n} {n,} {n,m}</code></p></td>
+<td align="left" valign="top"><p class="table">Repetition</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">8</p></td>
+<td align="left" valign="top"><p class="table"><code>! ^</code></p></td>
+<td align="left" valign="top"><p class="table">Negation and Character-Level Negation</p></td>
+</tr>
+<tr>
+<td align="center" valign="top"><p class="table">9</p></td>
+<td align="left" valign="top"><p class="table"><code>( &lt;expr&gt; )</code></p></td>
+<td align="left" valign="top"><p class="table">Grouping</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="machconst">2.5. Regular Language Operators</h3>
+<div class="paragraph"><p>When using Ragel it is helpful to have a sense of how it constructs machines.
+The determinization process can produce results that seem unusual to someone
+not familiar with the NFA to DFA conversion algorithm. In this section we
+describe Ragel&#8217;s state machine operators. Though the operators are defined
+using epsilon transitions, it should be noted that this is for discussion only.
+The epsilon transitions described in this section do not persist, but are
+immediately removed by the determinization process which is executed at every
+operation. Ragel does not make use of any nondeterministic intermediate state
+machines.</p></div>
+<div class="paragraph"><p>To create an epsilon transition between two states <code>x</code> and <code>y</code> is to
+copy all of the properties of <code>y</code> into <code>x</code>. This involves drawing in
+all of <code>y</code>'s to-state actions, EOF actions, etc., in addition to its
+transitions. If <code>x</code> and <code>y</code> both have a transition out on the same
+character, then the transitions must be combined.  During transition
+combination a new transition is made that goes to a new state that is the
+combination of both target states. The new combination state is created using
+the same epsilon transition method.  The new state has an epsilon transition
+drawn to all the states that compose it. Since the creation of new epsilon
+transitions may be triggered every time an epsilon transition is drawn, the
+process of drawing epsilon transitions is repeated until there are no more
+epsilon transitions to be made.</p></div>
+<div class="paragraph"><p>A very common error that is made when using Ragel is to make machines that do
+too much. That is, to create machines that have unintentional
+nondeterministic properties. This usually results from being unaware of the common strings
+between machines that are combined together using the regular language
+operators. This can involve never leaving a machine, causing its actions to be
+propagated through all the following states. Or it can involve an alternation
+where both branches are unintentionally taken simultaneously.</p></div>
+<div class="paragraph"><p>This problem forces one to think hard about the language that needs to be
+matched. To guard against this kind of problem one must ensure that the machine
+specification is divided up using boundaries that do not allow ambiguities from
+one portion of the machine to the next. See the chapter on
+<a href="#controlling_nondeterminism">Controlling Nondeterminism</a> for more on this
+problem and how to solve it.</p></div>
+<div class="paragraph"><p>The Graphviz tool is an immense help when debugging improperly compiled
+machines or otherwise learning how to use Ragel. Graphviz Dot files can be
+generated from Ragel programs using the <code>-V</code> option. See the section on
+<a href="#visualization">Visualization</a> for more information.</p></div>
+<div class="sect3">
+<h4 id="_union">2.5.1. Union</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr | expr</code></pre>
+</div></div>
+<div class="paragraph"><p>The union operation produces a machine that matches any string in machine one
+or machine two. The operation first creates a new start state. Epsilon
+transitions are drawn from the new start state to the start states of both
+input machines.  The resulting machine has a final state set equivalent to the
+union of the final state sets of both input machines. In this operation, there
+is the opportunity for nondeterminism among both branches. If there are
+strings, or prefixes of strings that are matched by both machines then the new
+machine will follow both parts of the alternation at once. The union operation is
+shown below.</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="opor.png" alt="opor.png" />
+</div>
+</div>
+<div class="paragraph"><p>The following example demonstrates the union of three machines representing
+common tokens.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Hex digits, decimal digits, or identifiers
+main := '0x' xdigit+ | digit+ | alpha alnum*;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exor.png" alt="exor.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_intersection">2.5.2. Intersection</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr &amp; expr</code></pre>
+</div></div>
+<div class="paragraph"><p>Intersection produces a machine that matches any string that is in both machine
+one and machine two. To achieve intersection, a union is performed on the two
+machines. After the result has been made deterministic, any final state that is
+not a combination of final states from both machines has its final state status
+revoked. To complete the operation, paths that do not lead to a final state are
+pruned from the machine. Therefore, if there are any such paths in either of
+the expressions they will be removed by the intersection operator.
+Intersection can be used to require that two independent patterns be
+simultaneously satisfied as in the following example.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Match lines four characters wide that contain
+# words separated by whitespace.
+main :=
+    /[^\n][^\n][^\n][^\n]\n/* &amp;
+    (/[a-z][a-z]*/ | [ \n])**;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exinter.png" alt="exinter.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_difference">2.5.3. Difference</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr - expr</code></pre>
+</div></div>
+<div class="paragraph"><p>The difference operation produces a machine that matches
+strings that are in machine one but are not in machine two. To achieve subtraction,
+a union is performed on the two machines. After the result has been made
+deterministic, any final state that came from machine two or is a combination
+of states involving a final state from machine two has its final state status
+revoked. As with intersection, the operation is completed by pruning any path
+that does not lead to a final state.  The following example demonstrates the
+use of subtraction to exclude specific cases from a set.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Subtract keywords from identifiers.
+main := /[a-z][a-z]*/ - ( 'for' | 'int' );</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exsubtr.png" alt="exsubtr.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="strong_difference">2.5.4. Strong Difference</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr -- expr</code></pre>
+</div></div>
+<div class="paragraph"><p>Strong difference produces a machine that matches any string of the first
+machine that does not have any string of the second machine as a substring. In
+the following example, strong subtraction is used to excluded <code>CRLF</code> from
+a sequence. In the corresponding visualization, the label <code>DEF</code> is short
+for default. The default transition is taken if no other transition can be
+taken.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>crlf = '\r\n';
+main := [a-z]+ ':' ( any* -- crlf ) crlf;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exstrongsubtr.png" alt="exstrongsubtr.png" />
+</div>
+</div>
+<div class="paragraph"><p>This operator is equivalent to the following.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr - ( any* expr any* )</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_concatenation">2.5.5. Concatenation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr . expr</code></pre>
+</div></div>
+<div class="paragraph"><p>Concatenation produces a machine that matches all the strings in machine one
+followed by all the strings in machine two.  Concatenation draws epsilon
+transitions from the final states of the first machine to the start state of
+the second machine. The final states of the first machine lose their final
+state status, unless the start state of the second machine is final as well.
+Concatenation is the default operator. Two machines next to each other with no
+operator between them results in concatenation.</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="opconcat.png" alt="opconcat.png" />
+</div>
+</div>
+<div class="paragraph"><p>The opportunity for nondeterministic behaviour results from the possibility of
+the final states of the first machine accepting a string that is also accepted
+by the start state of the second machine.
+The most common scenario in which this happens is the
+concatenation of a machine that repeats some pattern with a machine that gives
+a terminating string, but the repetition machine does not exclude the
+terminating string. The example in <a href="#strong_difference">Strong Difference</a>
+guards against this. Another example is the expression <code>("'" any* "'")</code>.
+When executed the thread of control will
+never leave the <code>any*</code> machine.  This is a problem especially if actions
+are embedded to process the characters of the <code>any*</code> component.</p></div>
+<div class="paragraph"><p>In the following example, the first machine is always active due to the
+nondeterministic nature of concatenation. This particular nondeterminism is intended,
+however, because we wish to permit EOF strings before the end of the input.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Require an eof marker on the last line.
+main := /[^\n]*\n/* . 'EOF\n';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exconcat.png" alt="exconcat.png" />
+</div>
+</div>
+<div class="paragraph"><p>There is a language ambiguity involving concatenation and subtraction. Because
+concatenation is the default operator for two adjacent machines there is an
+ambiguity between subtraction of a positive numerical literal and concatenation
+of a negative numerical literal. For example, <code>(x-7)</code> could be interpreted as
+<code>(x . -7)</code> or <code>(x - 7)</code>. In the Ragel language, the subtraction operator always
+takes precedence over concatenation of a negative literal. We adhere to the
+rule that the default concatenation operator takes effect only when there are
+no other operators between two machines. Beware of writing machines such as
+<code>(any -1)</code> when what is desired is a concatenation of <code>any</code> and <code>-1</code>. Instead
+write <code>(any . -1)</code> or <code>(any (-1))</code>. If in doubt of the meaning of your program
+do not rely on the default concatenation operator; always use the <code>.</code> symbol.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_kleene_star">2.5.6. Kleene Star</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr*</code></pre>
+</div></div>
+<div class="paragraph"><p>The machine resulting from the Kleene Star operator will match zero or more
+repetitions of the machine it is applied to.
+It creates a new start state and an additional final
+state.  Epsilon transitions are drawn between the new start state and the old start
+state, between the new start state and the new final state, and
+between the final states of the machine and the new start state.  After the
+machine is made deterministic, the final states get all the
+transitions of the start state.</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="opstar.png" alt="opstar.png" />
+</div>
+</div>
+<div class="paragraph"><p>The possibility for nondeterministic behaviour arises if the final states have
+transitions on any of the same characters as the start state.  This is common
+when applying kleene star to an alternation of tokens. Like the other problems
+arising from nondeterministic behavior, this is discussed in more detail in the chapter on
+<a href="#controlling_nondeterminism">Controlling Nondeterminism</a>. This particular
+problem can also be solved using the longest-match construction discussed in the section
+on <a href="#generating_scanners">Scanners</a>.</p></div>
+<div class="paragraph"><p>In this example, there is no nondeterminism introduced by the exterior kleene
+star due to the newline at the end of the regular expression. Without the
+newline the exterior kleene star would be redundant and there would be
+ambiguity between repeating the inner range of the regular expression and the
+entire regular expression. Though it would not cause a problem in this case,
+unnecessary nondeterminism in the kleene star operator often causes undesired
+results for new Ragel users and must be guarded against.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Match any number of lines with only lowercase letters.
+main := /[a-z]*\n/*;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exstar.png" alt="exstar.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_one_or_more_repetition">2.5.7. One Or More Repetition</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr+</code></pre>
+</div></div>
+<div class="paragraph"><p>This operator produces the concatenation of the machine with the kleene star of
+itself. The result will match one or more repetitions of the machine. The plus
+operator is equivalent to <code>(expr . expr*)</code>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Match alpha-numeric words.
+main := alnum+;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="explus.png" alt="explus.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_optional">2.5.8. Optional</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr?</code></pre>
+</div></div>
+<div class="paragraph"><p>The <em>optional</em> operator produces a machine that accepts the machine
+given or the zero length string. The optional operator is equivalent to
+<code>(expr | '' )</code>. In the following example the optional operator is used to
+possibly extend a token.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Match integers or floats.
+main := digit+ ('.' digit+)?;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exoption.png" alt="exoption.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_repetition">2.5.9. Repetition</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>expr {n}</code>&#8201;&#8212;&#8201;Exactly N copies of expr.
+</p>
+</li>
+<li>
+<p>
+<code>expr {,n}</code>&#8201;&#8212;&#8201;Zero to N copies of expr.
+</p>
+</li>
+<li>
+<p>
+<code>expr {n,}</code>&#8201;&#8212;&#8201;N or more copies of expr.
+</p>
+</li>
+<li>
+<p>
+<code>expr {n,m}</code>&#8201;&#8212;&#8201;N to M copies of expr.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect3">
+<h4 id="_negation">2.5.10. Negation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>!expr</code></pre>
+</div></div>
+<div class="paragraph"><p>Negation produces a machine that matches any string not matched by the given
+machine. Negation is equivalent to <code>(any* - expr)</code>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Accept anything but a string beginning with a digit.
+main := ! ( digit any* );</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exnegate.png" alt="exnegate.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_character_level_negation">2.5.11. Character-Level Negation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>^expr</code></pre>
+</div></div>
+<div class="paragraph"><p>Character-level negation produces a machine that matches any single character
+not matched by the given machine. Character-Level Negation is equivalent to
+<code>(any - expr)</code>. It must be applied only to machines that match strings of
+length one.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_state_machine_minimization">2.6. State Machine Minimization</h3>
+<div class="paragraph"><p>State machine minimization is the process of finding the minimal equivalent FSM accepting
+the language. Minimization reduces the number of states in machines
+by merging equivalent states. It does not change the behaviour of the machine
+in any way. It will cause some states to be merged into one because they are
+functionally equivalent. State minimization is on by default. It can be turned
+off with the <code>-n</code> option.</p></div>
+<div class="paragraph"><p>The algorithm implemented is similar to Hopcroft&#8217;s state minimization
+algorithm. Hopcroft&#8217;s algorithm assumes a finite alphabet that can be listed in
+memory, whereas Ragel supports arbitrary integer alphabets that cannot be
+listed in memory. Though exact analysis is very difficult, Ragel minimization
+runs close to O(n * log(n)) and requires O(n) temporary storage where
+$n$ is the number of states.</p></div>
+</div>
+<div class="sect2">
+<h3 id="visualization">2.7. Visualization</h3>
+<div class="paragraph"><p>Ragel is able to emit compiled state machines in Graphviz&#8217;s Dot file format.
+This is done using the <code>-V</code> option.
+Graphviz support allows users to perform
+incremental visualization of their parsers. User actions are displayed on
+transition labels of the graph.</p></div>
+<div class="paragraph"><p>If the final graph is too large to be
+meaningful, or even drawn, the user is able to inspect portions of the parser
+by naming particular regular expression definitions with the <code>-S</code> and
+<code>-M</code> options to the <code>ragel</code> program. Use of Graphviz greatly
+improves the Ragel programming experience. It allows users to learn Ragel by
+experimentation and also to track down bugs caused by unintended
+nondeterminism.</p></div>
+<div class="paragraph"><p>Ragel has another option to help debugging. The <code>-x</code> option causes Ragel
+to emit the compiled machine in an XML format.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_user_actions">3. User Actions</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Ragel permits the user to embed actions into the transitions of a regular
+expression&#8217;s corresponding state machine. These actions are executed when the
+generated code moves over a transition.  Like the regular expression operators,
+the action embedding operators are fully compositional. They take a state
+machine and an action as input, embed the action and yield a new state machine
+that can be used in the construction of other machines. Due to the
+compositional nature of embeddings, the user has complete freedom in the
+placement of actions.</p></div>
+<div class="paragraph"><p>A machine&#8217;s transitions are categorized into four classes. The action embedding
+operators access the transitions defined by these classes. The
+<em>entering transition</em> operator <code>&gt;</code> isolates the start state, then embeds an action
+into all transitions leaving it. The <em>finishing transition</em> operator
+<code>@</code> embeds an action into all transitions going into a final state.  The
+<em>all transition</em> operator <code>$</code> embeds an action into all transitions of
+an expression. The <em>leaving transition</em> operator <code>%</code> provides access
+to the yet-unmade transitions moving out of the machine via the final states.</p></div>
+<div class="sect2">
+<h3 id="_embedding_actions">3.1. Embedding Actions</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>action ActionName {
+    /* Code an action here. */
+    count += 1;
+}</code></pre>
+</div></div>
+<div class="paragraph"><p>The action statement defines a block of code that can be embedded into an FSM.
+Action names can be referenced by the action embedding operators in
+expressions. Though actions need not be named in this way (literal blocks
+of code can be embedded directly when building machines), defining reusable
+blocks of code whenever possible is good practice because it potentially increases the
+degree to which the machine can be minimized.</p></div>
+<div class="paragraph"><p>Within an action some Ragel expressions and statements are parsed and
+translated. These allow the user to interact with the machine from action code.
+See <a href="#vals">Values and Statements</a> for a complete list of values and
+statements available in code blocks.</p></div>
+<div class="sect3">
+<h4 id="_entering_action">3.1.1. Entering Action</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr &gt; action</code></pre>
+</div></div>
+<div class="paragraph"><p>The entering action operator embeds an action into all transitions
+that enter into the machine from the start state. If the start state is final,
+then the action is also embedded into the start state as a leaving action. This
+means that if a machine accepts the zero-length string and control passes
+through the start state then the entering action is executed. Note
+that this can happen on both a following character and on the EOF event.</p></div>
+<div class="paragraph"><p>In some machines, the start state has transtions coming in from within the
+machine. In these cases the start state is first isolated from the rest of the
+machine ensuring that the entering actions are executed once only.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Execute A at the beginning of a string of alpha.
+action A {}
+main := ( lower* &gt;A ) . ' ';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exstact.png" alt="exstact.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_finishing_action">3.1.2. Finishing Action</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr @ action</code></pre>
+</div></div>
+<div class="paragraph"><p>The finishing action operator embeds an action into any transitions that move
+the machine into a final state. Further input may move the machine out of the
+final state, but keep it in the machine. Therefore, finishing actions may be
+executed more than once if a machine has any internal transitions out of a
+final state. In the following example, the final state has no transitions out
+and the finishing action is executed only once.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Execute A when the trailing space is seen.
+main := ( lower* ' ' ) @A;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exdoneact.png" alt="exdoneact.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_all_transition_action">3.1.3. All Transition Action</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr $ action</code></pre>
+</div></div>
+<div class="paragraph"><p>The all transition operator embeds an action into all transitions of a machine.
+The action is executed whenever a transition of the machine is taken. In the
+following example, A is executed on every character matched.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Execute A on any characters of the machine.
+main := ( 'm1' | 'm2' ) $A;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exallact.png" alt="exallact.png" />
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="out_actions">3.1.4. Leaving Actions</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr % action</code></pre>
+</div></div>
+<div class="paragraph"><p>The leaving action operator queues an action for embedding into the transitions
+that go out of a machine via a final state. The action is first stored in
+the machine&#8217;s final states and is later transferred to any transitions that are
+made going out of the machine by a kleene star or concatenation operation.</p></div>
+<div class="paragraph"><p>If a final state of the machine is still final when compilation is complete
+then the leaving action is also embedded as an EOF action. Therefore, leaving
+the machine is defined as either leaving on a character or as state machine
+acceptance.</p></div>
+<div class="paragraph"><p>This operator allows one to associate an action with the termination of a
+sequence, without being concerned about what particular character terminates
+the sequence. In the following example, A is executed when leaving the alpha
+machine on the newline character.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Match a word followed by a newline. Execute A when
+# finishing the word.
+main := ( lower+ %A ) . '\n';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exoutact1.png" alt="exoutact1.png" />
+</div>
+</div>
+<div class="paragraph"><p>In the following example, the <code>term_word</code> action could be used to register
+the appearance of a word and to clear the buffer that the <code>lower</code> action used
+to store the text of it.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>word = ( [a-z] @lower )+ %term_word;
+main := word ( ' ' @space word )* '\n' @newline;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exoutact2.png" alt="exoutact2.png" />
+</div>
+</div>
+<div class="paragraph"><p>In this final example of the action embedding operators, A is executed upon entering
+the alpha machine, B is executed on all transitions of the
+alpha machine, C is executed when the alpha machine is exited by moving into the
+newline machine and N is executed when the newline machine moves into a final
+state.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Execute A on starting the alpha machine, B on every transition
+# moving through it and C upon finishing. Execute N on the newline.
+main := ( lower* &gt;A $B %C ) . '\n' @N;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="exaction.png" alt="exaction.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_state_action_embedding_operators">3.2. State Action Embedding Operators</h3>
+<div class="paragraph"><p>The state embedding operators allow one to embed actions into states. Like the
+transition embedding operators, there are several different classes of states
+that the operators access. The meanings of the symbols are similar to the
+meanings of the symbols used for the transition embedding operators. The design
+of the state selections was driven by a need to cover the states of an
+expression with exactly one error action.</p></div>
+<div class="paragraph"><p>Unlike the transition embedding operators, the state embedding operators are
+also distinguished by the different kinds of events that embedded actions can
+be associated with. Therefore the state embedding operators have two
+components.  The first, which is the first one or two characters, specifies the
+class of states that the action will be embedded into. The second component
+specifies the type of event the action will be executed on. The symbols of the
+second component also have equivalent keywords.</p></div>
+<div class="paragraph"><p>The different classes of states are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>&gt;</code>&#8201;&#8212;&#8201;the start state
+</p>
+</li>
+<li>
+<p>
+<code>&lt;</code>&#8201;&#8212;&#8201;any state except the start state
+</p>
+</li>
+<li>
+<p>
+<code>$</code>&#8201;&#8212;&#8201;all states
+</p>
+</li>
+<li>
+<p>
+<code>%</code>&#8201;&#8212;&#8201;final states
+</p>
+</li>
+<li>
+<p>
+<code>@</code>&#8201;&#8212;&#8201;any state except final states
+</p>
+</li>
+<li>
+<p>
+<code>&lt;&gt;</code>&#8201;&#8212;&#8201;any except start and final (middle)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The different kinds of embeddings are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>~</code>&#8201;&#8212;&#8201;to-state actions (<code>to</code>)
+</p>
+</li>
+<li>
+<p>
+<code>*</code>&#8201;&#8212;&#8201;from-state actions (<code>from</code>)
+</p>
+</li>
+<li>
+<p>
+<code>/</code>&#8201;&#8212;&#8201;EOF actions (<code>eof</code>)
+</p>
+</li>
+<li>
+<p>
+<code>!</code>&#8201;&#8212;&#8201;error actions (<code>err</code>)
+</p>
+</li>
+<li>
+<p>
+<code>^</code>&#8201;&#8212;&#8201;local error actions (<code>lerr</code>)
+</p>
+</li>
+</ul></div>
+<div class="sect3">
+<h4 id="_to_state_and_from_state_actions">3.2.1. To-State and From-State Actions</h4>
+<div class="sect4">
+<h5 id="_to_state_actions">To-State Actions</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>&gt;~action      &gt;to(name)      &gt;to{...}</code>&#8201;&#8212;&#8201;the start state
+</p>
+</li>
+<li>
+<p>
+<code>&lt;~action      &lt;to(name)      &lt;to{...}</code>&#8201;&#8212;&#8201;any state except the start state
+</p>
+</li>
+<li>
+<p>
+<code>$~action      $to(name)      $to{...}</code>&#8201;&#8212;&#8201;all states
+</p>
+</li>
+<li>
+<p>
+<code>%~action      %to(name)      %to{...}</code>&#8201;&#8212;&#8201;final states
+</p>
+</li>
+<li>
+<p>
+<code>@~action      @to(name)      @to{...}</code>&#8201;&#8212;&#8201;any state except final states
+</p>
+</li>
+<li>
+<p>
+<code>&lt;&gt;~action     &lt;&gt;to(name)     &lt;&gt;to{...}</code>&#8201;&#8212;&#8201;any except start and final (middle)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>To-state actions are executed whenever the state machine moves into the
+specified state, either by a natural movement over a transition or by an
+action-based transfer of control such as <code>fgoto</code>. They are executed after the
+in-transition&#8217;s actions but before the current character is advanced and
+tested against the end of the input block. To-state embeddings stay with the
+state. They are irrespective of the state&#8217;s current set of transitions and any
+future transitions that may be added in or out of the state.</p></div>
+<div class="paragraph"><p>Note that the setting of the current state variable <code>cs</code> outside of the
+execute code is not considered by Ragel as moving into a state and consequently
+the to-state actions of the new current state are not executed. This includes
+the initialization of the current state when the machine begins.  This is
+because the entry point into the machine execution code is after the execution
+of to-state actions.</p></div>
+</div>
+<div class="sect4">
+<h5 id="_from_state_actions">From-State Actions</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>&gt;*action     &gt;from(name)     &gt;from{...}</code>&#8201;&#8212;&#8201;the start state
+</p>
+</li>
+<li>
+<p>
+<code>&lt;*action     &lt;from(name)     &lt;from{...}</code>&#8201;&#8212;&#8201;any state except the start state
+</p>
+</li>
+<li>
+<p>
+<code>$*action     $from(name)     $from{...}</code>&#8201;&#8212;&#8201;all states
+</p>
+</li>
+<li>
+<p>
+<code>%*action     %from(name)     %from{...}</code>&#8201;&#8212;&#8201;final states
+</p>
+</li>
+<li>
+<p>
+<code>@*action     @from(name)     @from{...}</code>&#8201;&#8212;&#8201;any state except final states
+</p>
+</li>
+<li>
+<p>
+<code>&lt;&gt;*action    &lt;&gt;from(name)    &lt;&gt;from{...}</code>&#8201;&#8212;&#8201;any except start and final (middle)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>From-state actions are executed whenever the state machine takes a transition from a
+state, either to itself or to some other state. These actions are executed
+immediately after the current character is tested against the input block end
+marker and before the transition to take is sought based on the current
+character. From-state actions are therefore executed even if a transition
+cannot be found and the machine moves into the error state.  Like to-state
+embeddings, from-state embeddings stay with the state.</p></div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_eof_actions">3.2.2. EOF Actions</h4>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>&gt;/action     &gt;eof(name)     &gt;eof{...}</code>&#8201;&#8212;&#8201;the start state
+</p>
+</li>
+<li>
+<p>
+<code>&lt;/action     &lt;eof(name)     &lt;eof{...}</code>&#8201;&#8212;&#8201;any state except the start state
+</p>
+</li>
+<li>
+<p>
+<code>$/action     $eof(name)     $eof{...}</code>&#8201;&#8212;&#8201;all states
+</p>
+</li>
+<li>
+<p>
+<code>%/action     %eof(name)     %eof{...}</code>&#8201;&#8212;&#8201;final states
+</p>
+</li>
+<li>
+<p>
+<code>@/action     @eof(name)     @eof{...}</code>&#8201;&#8212;&#8201;any state except final states
+</p>
+</li>
+<li>
+<p>
+<code>&lt;&gt;/action    &lt;&gt;eof(name)    &lt;&gt;eof{...}</code>&#8201;&#8212;&#8201;any except start and final (middle)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The EOF action embedding operators enable the user to embed actions that are
+executed at the end of the input stream. EOF actions are stored in states and
+generated in the <code>write exec</code> block. They are run when <code>p == pe == eof</code>
+as the execute block is finishing. EOF actions are free to adjust <code>p</code>
+and jump to another part of the machine to restart execution.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_handling_errors">3.2.3. Handling Errors</h4>
+<div class="paragraph"><p>In many applications it is useful to be able to react to parsing errors.  The
+user may wish to print an error message that depends on the context.  It may
+also be desirable to consume input in an attempt to return the input stream to
+some known state and resume parsing. To support error handling and recovery,
+Ragel provides error action embedding operators. There are two kinds of error
+actions: global error actions and local error actions. Error actions can be
+used to simply report errors, or by jumping to a machine instantiation that
+consumes input, can attempt to recover from errors.</p></div>
+<div class="sect4">
+<h5 id="_global_error_actions">Global Error Actions</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>&gt;!action     &gt;err(name)     &gt;err{...}</code>&#8201;&#8212;&#8201;the start state
+</p>
+</li>
+<li>
+<p>
+<code>&lt;!action     &lt;err(name)     &lt;err{...}</code>&#8201;&#8212;&#8201;any state except the start state
+</p>
+</li>
+<li>
+<p>
+<code>$!action     $err(name)     $err{...}</code>&#8201;&#8212;&#8201;all states
+</p>
+</li>
+<li>
+<p>
+<code>%!action     %err(name)     %err{...}</code>&#8201;&#8212;&#8201;final states
+</p>
+</li>
+<li>
+<p>
+<code>@!action     @err(name)     @err{...}</code>&#8201;&#8212;&#8201;any state except final states
+</p>
+</li>
+<li>
+<p>
+<code>&lt;&gt;!action    &lt;&gt;err(name)    &lt;&gt;err{...}</code>&#8201;&#8212;&#8201;any except start and final (middle)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Global error actions are stored in the states they are embedded into until
+compilation is complete. They are then transferred to the transitions that move
+into the error state. These transitions are taken on all input characters that
+are not already covered by the state&#8217;s transitions. If a state with an error
+action is not final when compilation is complete, then the action is also
+embedded as an EOF action.</p></div>
+<div class="paragraph"><p>Error actions can be used to recover from errors by jumping back into the
+machine with <code>fgoto</code> and optionally altering <code>p</code>.</p></div>
+</div>
+<div class="sect4">
+<h5 id="_local_error_actions">Local Error Actions</h5>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>&gt;^action     &gt;lerr(name)     &gt;lerr{...}</code>&#8201;&#8212;&#8201;the start state
+</p>
+</li>
+<li>
+<p>
+<code>&lt;^action     &lt;lerr(name)     &lt;lerr{...}</code>&#8201;&#8212;&#8201;any state except the start state
+</p>
+</li>
+<li>
+<p>
+<code>$^action     $lerr(name)     $lerr{...}</code>&#8201;&#8212;&#8201;all states
+</p>
+</li>
+<li>
+<p>
+<code>%^action     %lerr(name)     %lerr{...}</code>&#8201;&#8212;&#8201;final states
+</p>
+</li>
+<li>
+<p>
+<code>@^action     @lerr(name)     @lerr{...}</code>&#8201;&#8212;&#8201;any state except final states
+</p>
+</li>
+<li>
+<p>
+<code>&lt;&gt;^action    &lt;&gt;lerr(name)    &lt;&gt;lerr{...}</code>&#8201;&#8212;&#8201;any except start and final (middle)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Like global error actions, local error actions are also stored in the states
+they are embedded into until a transfer point. The transfer point is different
+however. Each local error action embedding is associated with a name. When a
+machine definition has been fully constructed, all local error action
+embeddings associated with the same name as the machine definition are
+transferred to the error transitions. At this time they are also embedded as
+EOF actions in the case of non-final states.</p></div>
+<div class="paragraph"><p>Local error actions can be used to specify an action to take when a particular
+section of a larger state machine fails to match. A particular machine
+definition&#8217;s &#8220;thread&#8221; may die and the local error actions executed, however
+the machine as a whole may continue to match input.</p></div>
+<div class="paragraph"><p>There are two forms of local error action embeddings. In the first form the
+name defaults to the current machine. In the second form the machine name can
+be specified.  This is useful when it is more convenient to specify the local
+error action in a sub-definition that is used to construct the machine
+definition that the local error action is associated with. To embed local error
+actions and explicitly state the machine definition on which the transfer is to
+happen use <code>(name, action)</code> as the action.</p></div>
+</div>
+<div class="sect4">
+<h5 id="_example">Example</h5>
+<div class="paragraph"><p>The following example uses error actions to report an error and jump to a
+machine that consumes the remainder of the line when parsing fails. After
+consuming the line, the error recovery machine returns to the main loop.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action cmd_err {
+    printf( "command error\n" );
+    fhold; fgoto line;
+}
+action from_err {
+    printf( "from error\n" );
+    fhold; fgoto line;
+}
+action to_err {
+    printf( "to error\n" );
+    fhold; fgoto line;
+}
+
+line := [^\n]* '\n' @{ fgoto main; };
+
+main := (
+    (
+        'from' @err(cmd_err)
+            ( ws+ address ws+ date '\n' ) $err(from_err) |
+        'to' @err(cmd_err)
+            ( ws+ address '\n' ) $err(to_err)
+    )
+)*;</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_action_ordering_and_duplicates">3.3. Action Ordering and Duplicates</h3>
+<div class="paragraph"><p>When combining expressions that have embedded actions it is often the case that
+a number of actions must be executed on a single input character. For example,
+following a concatenation the leaving action of the left expression and the
+entering action of the right expression will be embedded into one transition.
+This requires a method of ordering actions that is intuitive and
+predictable for the user, and repeatable for the compiler.</p></div>
+<div class="paragraph"><p>We associate with the embedding of each action a unique timestamp that is
+used to order actions that appear together on a single transition in the final
+state machine. To accomplish this, we recursively traverse the parse tree of
+regular expressions and assign timestamps to action embeddings. References to
+machine definitions are followed in the traversal. When we visit a
+parse tree node, we assign timestamps to all <em>entering</em> action embeddings,
+recurse on the parse tree, then assign timestamps to the remaining <em>all</em>,
+<em>finishing</em>, and <em>leaving</em> embeddings in the order in which they
+appear.</p></div>
+<div class="paragraph"><p>By default Ragel does not permit a single action to appear multiple times in an action
+list. When the final machine has been created, actions that appear more than
+once in a single transition, to-state, from-state or EOF action list have their
+duplicates removed.
+The first appearance of the action is preserved. This is useful in a number of
+scenarios. First, it allows us to union machines with common prefixes without
+worrying about the action embeddings in the prefix being duplicated. Second, it
+prevents leaving actions from being transferred multiple times. This can
+happen when a machine is repeated, then followed with another machine that
+begins with a common character. For example:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>word = [a-z]+ %act;
+main := word ( '\n' word )* '\n\n';</code></pre>
+</div></div>
+<div class="paragraph"><p>Note that Ragel does not compare action bodies to determine if they have
+identical program text. It simply checks for duplicates using each action
+block&#8217;s unique location in the program.</p></div>
+<div class="paragraph"><p>The removal of duplicates can be turned off using the <code>-d</code> option.</p></div>
+</div>
+<div class="sect2">
+<h3 id="vals">3.4. Values and Statements Available in Code Blocks</h3>
+<div class="paragraph"><p>The following values are available in code blocks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>fpc</code>&#8201;&#8212;&#8201;A pointer to the current character. This is equivalent to
+accessing the <code>p</code> variable.
+</p>
+</li>
+<li>
+<p>
+<code>fc</code>&#8201;&#8212;&#8201;The current character. This is equivalent to the expression <code>(*p)</code>.
+</p>
+</li>
+<li>
+<p>
+<code>fcurs</code>&#8201;&#8212;&#8201;An integer value representing the current state. This
+value should only be read from. To move to a different place in the machine
+from action code use the <code>fgoto</code>, <code>fnext</code> or <code>fcall</code> statements. Outside of the
+machine execution code the <code>cs</code> variable may be modified.
+</p>
+</li>
+<li>
+<p>
+<code>ftargs</code>&#8201;&#8212;&#8201;An integer value representing the target state. This
+value should only be read from. Again, <code>fgoto</code>, <code>fnext</code> and
+<code>fcall</code> can be used to move to a specific entry point.
+</p>
+</li>
+<li>
+<p>
+<code>fentry(&lt;label&gt;)</code>&#8201;&#8212;&#8201;Retrieve an integer value representing the
+entry point <code>label</code>. The integer value returned will be a compile time
+constant. This number is suitable for later use in control flow transfer
+statements that take an expression. This value should not be compared against
+the current state because any given label can have multiple states representing
+it. The value returned by <code>fentry</code> can be any one of the multiple states that
+it represents.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The following statements are available in code blocks:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>fhold;</code>&#8201;&#8212;&#8201;Do not advance over the current character. If processing
+data in multiple buffer blocks, the <code>fhold</code> statement should only be used
+once in the set of actions executed on a character.  Multiple calls may result
+in backing up over the beginning of the buffer block. The <code>fhold</code>
+statement does not imply any transfer of control. It is equivalent to the
+<code>p--;</code> statement.
+</p>
+</li>
+<li>
+<p>
+<code>fexec &lt;expr&gt;;</code>&#8201;&#8212;&#8201;Set the next character to process. This can be
+used to backtrack to previous input or advance ahead. Unlike <code>fhold</code>, which can
+be used anywhere, <code>fexec</code> requires the user to ensure that the target of the
+backtrack is in the current buffer block or is known to be somewhere ahead of
+it. The machine will continue iterating forward until <code>pe</code> is arrived at,
+<code>fbreak</code> is called or the machine moves into the error state. In actions
+embedded into transitions, the <code>fexec</code> statement is equivalent to setting <code>p</code>
+to one position ahead of the next character to process.  If the user also
+modifies <code>pe</code>, it is possible to change the buffer block entirely.
+</p>
+</li>
+<li>
+<p>
+<code>fgoto &lt;label&gt;;</code>&#8201;&#8212;&#8201;Jump to an entry point defined by
+<code>&lt;label&gt;</code>.  The <code>fgoto</code> statement immediately transfers control to
+the destination state.
+</p>
+</li>
+<li>
+<p>
+<code>fgoto *&lt;expr&gt;;</code>&#8201;&#8212;&#8201;Jump to an entry point given by <code>&lt;expr&gt;</code>.
+The expression must evaluate to an integer value representing a state.
+</p>
+</li>
+<li>
+<p>
+<code>fnext &lt;label&gt;;</code>&#8201;&#8212;&#8201;Set the next state to be the entry point defined
+by <code>label</code>.  The <code>fnext</code> statement does not immediately jump to the specified
+state. Any action code following the statement is executed.
+</p>
+</li>
+<li>
+<p>
+<code>fnext *&lt;expr&gt;;</code>&#8201;&#8212;&#8201;Set the next state to be the entry point given
+by <code>&lt;expr&gt;</code>. The expression must evaluate to an integer value representing
+a state.
+</p>
+</li>
+<li>
+<p>
+<code>fcall &lt;label&gt;;</code>&#8201;&#8212;&#8201;Push the target state and jump to the entry
+point defined by <code>&lt;label&gt;</code>.  The next <code>fret</code> will jump to the target
+of the transition on which the call was made. Use of <code>fcall</code> requires
+the declaration of a call stack. An array of integers named <code>stack</code> and a
+single integer named <code>top</code> must be declared. With the <code>fcall</code>
+construct, control is immediately transferred to the destination state.
+See <a href="#modularization">Parser Modularization</a> for more information.
+</p>
+</li>
+<li>
+<p>
+<code>fcall *&lt;expr&gt;;</code>&#8201;&#8212;&#8201;Push the current state and jump to the entry
+point given by <code>&lt;expr&gt;</code>. The expression must evaluate to an integer value
+representing a state.
+</p>
+</li>
+<li>
+<p>
+<code>fret;</code>&#8201;&#8212;&#8201;Return to the target state of the transition on which the
+last <code>fcall</code> was made.  Use of <code>fret</code> requires the declaration of a
+call stack. Control is immediately transferred to the destination state.
+</p>
+</li>
+<li>
+<p>
+<code>fbreak;</code>&#8201;&#8212;&#8201;Advance <code>p</code>, save the target state to <code>cs</code>
+and immediately break out of the execute loop. This statement is useful in
+conjunction with the <code>noend</code> write option. Rather than process input until <code>pe</code>
+is arrived at, the <code>fbreak</code> statement can be used to stop processing from an
+action.  After an <code>fbreak</code> statement the <code>p</code> variable will point to the next
+character in the input. The current state will be the target of the current
+transition. Note that <code>fbreak</code> causes the target state&#8217;s to-state actions to be
+skipped.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Once actions with control-flow commands are embedded into a
+machine, the user must exercise caution when using the machine as the operand
+to other machine construction operators. If an action jumps to another state
+then unioning any transition that executes that action with another transition
+that follows some other path will cause that other path to be lost. Using
+commands that manually jump around a machine takes us out of the domain of
+regular languages because transitions that the
+machine construction operators are not aware of are introduced.  These
+commands should therefore be used with caution.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="controlling_nondeterminism">4. Controlling Nondeterminism</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Along with the flexibility of arbitrary action embeddings comes a need to
+control nondeterminism in regular expressions. If a regular expression is
+ambiguous, then sub-components of a parser other than the intended parts may become
+active. This means that actions that are irrelevant to the
+current subset of the parser may be executed, causing problems for the
+programmer.</p></div>
+<div class="paragraph"><p>Tools that are based on regular expression engines and that are used for
+recognition tasks will usually function as intended regardless of the presence
+of ambiguities. It is quite common for users of scripting languages to write
+regular expressions that are heavily ambiguous and it generally does not
+matter. As long as one of the potential matches is recognized, there can be any
+number of other matches present.  In some parsing systems the run-time engine
+can employ a strategy for resolving ambiguities, for example always pursuing
+the longest possible match and discarding others.</p></div>
+<div class="paragraph"><p>In Ragel, there is no regular expression run-time engine, just a simple state
+machine execution model. When we begin to embed actions and face the
+possibility of spurious action execution, it becomes clear that controlling
+nondeterminism at the machine construction level is very important. Consider
+the following example.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ws = [\n\t ];
+line = word $first ( ws word $tail )* '\n';
+lines = line*;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="lines1.png" alt="lines1.png" />
+</div>
+</div>
+<div class="paragraph"><p>Since the <code>ws</code> expression includes the newline character, we will
+not finish the <code>line</code> expression when a newline character is seen. We will
+simultaneously pursue the possibility of matching further words on the same
+line and the possibility of matching a second line. Evidence of this fact is
+in the state tables. On several transitions both the <code>first</code> and
+<code>tail</code> actions are executed.  The solution here is simple: exclude
+the newline character from the <code>ws</code> expression.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>ws = [\t ];
+line = word $first ( ws word $tail )* '\n';
+lines = line*;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="lines2.png" alt="lines2.png" />
+</div>
+</div>
+<div class="paragraph"><p>Solving this kind of problem is straightforward when the ambiguity is created
+by strings that are a single character long.  When the ambiguity is created by
+strings that are multiple characters long we have a more difficult problem. The
+following example is an incorrect attempt at a regular expression for C
+language comments.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>comment = '/*' ( any @comm )* '*/';
+main := comment ' ';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="comments1.png" alt="comments1.png" />
+</div>
+</div>
+<div class="paragraph"><p>Using standard concatenation, we will never leave the <code>any*</code> expression.
+We will forever entertain the possibility that a <code>'*/'</code> string that we see
+is contained in a longer comment and that, simultaneously, the comment has
+ended.  The concatenation of the <code>comment</code> machine with <code>SP</code> is done
+to show this. When we match space, we are also still matching the comment body.</p></div>
+<div class="paragraph"><p>One way to approach the problem is to exclude the terminating string from the
+<code>any*</code> expression using set difference. We must be careful to exclude not just
+the terminating string, but any string that contains it as a substring. A
+verbose, but proper specification of a C comment parser is given by the
+following regular expression.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>comment = '/*' ( ( any @comm )* - ( any* '*/' any* ) ) '*/';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="comments2.png" alt="comments2.png" />
+</div>
+</div>
+<div class="paragraph"><p>Note that Ragel&#8217;s strong subtraction operator <code>--</code> can also be used here.
+In doing this subtraction we have phrased the problem of controlling
+non-determinism in terms of excluding strings common to two expressions that
+interact when combined. We can also phrase the problem in terms of the
+transitions of the state machines that implement these expressions. During the
+concatenation of <code>any*</code> and <code>'*/'</code> we will be making transitions that are
+composed of both the loop of the first expression and the final character of
+the second. At this time we want the transition on the <code>'/'</code> character to take
+precedence over and disallow the transition that originated in the <code>any*</code> loop.</p></div>
+<div class="paragraph"><p>In another parsing problem, we wish to implement a lightweight tokenizer that
+we can utilize in the composition of a larger machine. For example, some HTTP
+headers have a token stream as a sub-language. The following example is an
+attempt at a regular expression-based tokenizer that does not function
+correctly due to unintended nondeterminism.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>header_contents = (
+    lower+ &gt;start_str $on_char %finish_str |
+    ' '
+)*;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="smallscanner.png" alt="smallscanner.png" />
+</div>
+</div>
+<div class="paragraph"><p>In this case, the problem with using a standard kleene star operation is that
+there is an ambiguity between extending a token and wrapping around the machine
+to begin a new token. Using the standard operator, we get an undesirable
+nondeterministic behaviour. Evidence of this can be seen on the transition out
+of state one, back to itself.  The transition extends the string, and
+simultaneously, finishes the string only to immediately begin a new one.  What
+is required is for the transitions that represent an extension of a token to
+take precedence over the transitions that represent the beginning of a new
+token. For this problem there is no simple solution that uses standard regular
+expression operators.</p></div>
+<div class="sect2">
+<h3 id="_priorities">4.1. Priorities</h3>
+<div class="paragraph"><p>A priority mechanism was devised and built into the determinization process,
+specifically for the purpose of allowing the user to control nondeterminism.
+Priorities are integer values embedded into transitions. When the
+determinization process is combining transitions that have different
+priorities, the transition with the higher priority is preserved and the
+transition with the lower priority is dropped.</p></div>
+<div class="paragraph"><p>Unfortunately, priorities can have unintended side effects because their
+operation requires that they linger in transitions indefinitely. They must
+linger because the Ragel program cannot know when the user is finished with a
+priority embedding.  A solution whereby they are explicitly deleted after use
+is conceivable; however this is not very user-friendly.  Priorities were
+therefore made into named entities. Only priorities with the same name are
+allowed to interact.  This allows any number of priorities to coexist in one
+machine for the purpose of controlling various different regular expression
+operations and eliminates the need to ever delete them. Such a scheme allows
+the user to choose a unique name, embed two different priority values using
+that name and be confident that the priority embedding will be free of any side
+effects.</p></div>
+<div class="paragraph"><p>In the first form of priority embedding, the name defaults to the name of the
+machine definition that the priority is assigned in. In this sense priorities
+are by default local to the current machine definition or instantiation. Beware
+of using this form in a longest-match machine, since there is only one name for
+the entire set of longest match patterns. In the second form the priority&#8217;s
+name can be specified, allowing priority interaction across machine definition
+boundaries.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>expr &gt; int</code>&#8201;&#8212;&#8201;Sets starting transitions to have priority int.
+</p>
+</li>
+<li>
+<p>
+<code>expr @ int</code>&#8201;&#8212;&#8201;Sets transitions that go into a final state to have priority int.
+</p>
+</li>
+<li>
+<p>
+<code>expr $ int</code>&#8201;&#8212;&#8201;Sets all transitions to have priority int.
+</p>
+</li>
+<li>
+<p>
+<code>expr % int</code>&#8201;&#8212;&#8201;Sets leaving transitions to
+have priority int. When a transition is made going out of the machine (either
+by concatenation or kleene star) its priority is immediately set to the leaving
+priority.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The second form of priority assignment allows the programmer to specify the
+name to which the priority is assigned.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>expr &gt; (name, int)</code>&#8201;&#8212;&#8201;Starting transitions.
+</p>
+</li>
+<li>
+<p>
+<code>expr @ (name, int)</code>&#8201;&#8212;&#8201;Finishing transitions (into a final state).
+</p>
+</li>
+<li>
+<p>
+<code>expr $ (name, int)</code>&#8201;&#8212;&#8201;All transitions.
+</p>
+</li>
+<li>
+<p>
+<code>expr % (name, int)</code>&#8201;&#8212;&#8201;Leaving transitions.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_guarded_operators_that_encapsulate_priorities">4.2. Guarded Operators that Encapsulate Priorities</h3>
+<div class="paragraph"><p>Priority embeddings are a very expressive mechanism. At the same time they
+can be very confusing for the user. They force the user to imagine
+the transitions inside two interacting expressions and work out the precise
+effects of the operations between them. When we consider
+that this problem is worsened by the
+potential for side effects caused by unintended priority name collisions, we
+see that exposing the user to priorities is undesirable.</p></div>
+<div class="paragraph"><p>Fortunately, in practice the use of priorities has been necessary only in a
+small number of scenarios.  This allows us to encapsulate their functionality
+into a small set of operators and fully hide them from the user. This is
+advantageous from a language design point of view because it greatly simplifies
+the design.</p></div>
+<div class="paragraph"><p>Going back to the C comment example, we can now properly specify it using a
+guarded concatenation operator which we call <em>finish-guarded concatenation</em>.
+From the user&#8217;s point of view, this operator terminates the first machine when
+the second machine moves into a final state.  It chooses a unique name and uses
+it to embed a low priority into all transitions of the first machine. A higher
+priority is then embedded into the transitions of the second machine that enter
+into a final state. The following example yields a machine identical to the
+example in the section on <a href="#controlling_nondeterminism">Controlling Nondeterminism</a>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>comment = '/*' ( any @comm )* :&gt;&gt; '*/';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="comments2.png" alt="comments2.png" />
+</div>
+</div>
+<div class="paragraph"><p>Another guarded operator is <em>left-guarded concatenation</em>, given by the
+<code>&lt;:</code> compound symbol. This operator places a higher priority on all
+transitions of the first machine. This is useful if one must forcibly separate
+two lists that contain common elements. For example, one may need to tokenize a
+stream, but first consume leading whitespace.</p></div>
+<div class="paragraph"><p>Ragel also includes a <em>longest-match kleene star</em> operator, given by the <code>**</code>
+compound symbol. This guarded operator embeds a high priority into all
+transitions of the machine. A lower priority is then embedded into the leaving
+transitions.  When the kleene star operator makes the epsilon transitions from
+the final states into the new start state, the lower priority will be
+transferred to the epsilon transitions. In cases where following an epsilon
+transition out of a final state conflicts with an existing transition out of a
+final state, the epsilon transition will be dropped.</p></div>
+<div class="paragraph"><p>Other guarded operators are conceivable, such as guards on union that cause one
+alternative to take precedence over another. These may be implemented when it
+is clear they constitute a frequently used operation. In the next section we
+discuss the explicit specification of state machines using state charts.</p></div>
+<div class="sect3">
+<h4 id="_entry_guarded_concatenation">4.2.1. Entry-Guarded Concatenation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr :&gt; expr</code></pre>
+</div></div>
+<div class="paragraph"><p>This operator concatenates two machines, but first assigns a low
+priority to all transitions
+of the first machine and a high priority to the starting transitions of the
+second machine. This operator is useful if from the final states of the first
+machine it is possible to accept the characters in the entering transitions of
+the second machine. This operator effectively terminates the first machine
+immediately upon starting the second machine, where otherwise they would be
+pursued concurrently. In the following example, entry-guarded concatenation is
+used to move out of a machine that matches everything at the first sign of an
+end-of-input marker.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Leave the catch-all machine on the first character of FIN.
+main := any* :&gt; 'FIN';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="entryguard.png" alt="entryguard.png" />
+</div>
+</div>
+<div class="paragraph"><p>Entry-guarded concatenation is equivalent to the following:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr $(unique_name,0) . expr &gt;(unique_name,1)</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_finish_guarded_concatenation">4.2.2. Finish-Guarded Concatenation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr :&gt;&gt; expr</code></pre>
+</div></div>
+<div class="paragraph"><p>This operator is
+like the previous operator, except the higher priority is placed on the final
+transitions of the second machine. This is useful if one wishes to entertain
+the possibility of continuing to match the first machine right up until the
+second machine enters a final state. In other words, it terminates the first
+machine only when the second accepts. In the following example, finish-guarded
+concatenation causes the move out of the machine that matches everything to be
+delayed until the full end-of-input marker has been matched.</p></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="finguard.png" alt="finguard.png" />
+</div>
+</div>
+<div class="paragraph"><p>Finish-guarded concatenation is equivalent to the following, with one
+exception. If the right machine&#8217;s start state is final, the higher priority is
+also embedded into it as a leaving priority. This prevents the left machine
+from persisting via the zero-length string.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr $(unique_name,0) . expr @(unique_name,1)</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_left_guarded_concatenation">4.2.3. Left-Guarded Concatenation</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr &lt;: expr</code></pre>
+</div></div>
+<div class="paragraph"><p>This operator places a higher priority on the left expression. It is useful if
+you want to prefix a sequence with another sequence composed of some of the
+same characters. For example, one can consume leading whitespace before
+tokenizing a sequence of whitespace-separated words as in:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>main := ( ' '* &gt;start %fin ) &lt;: ( ' ' $ws | [a-z] $alpha )*;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="leftguard.png" alt="leftguard.png" />
+</div>
+</div>
+<div class="paragraph"><p>Left-guarded concatenation is equivalent to the following:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr $(unique_name,1) . expr &gt;(unique_name,0)</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="longest_match_kleene_star">4.2.4. Longest-Match Kleene Star</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr**</code></pre>
+</div></div>
+<div class="paragraph"><p>This version of kleene star puts a higher priority on staying in the
+machine versus wrapping around and starting over. The LM kleene star is useful
+when writing simple tokenizers.  These machines are built by applying the
+longest-match kleene star to an alternation of token patterns, as in the
+following.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code># Repeat tokens, but make sure to get the longest match.
+main := (
+    lower ( lower | digit )* %A |
+    digit+ %B |
+    ' '
+)**;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="lmkleene.png" alt="lmkleene.png" />
+</div>
+</div>
+<div class="paragraph"><p>If a regular kleene star were used the machine above would not be able to
+distinguish between extending a word and beginning a new one.  This operator is
+equivalent to:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>( expr $(unique_name,1) %(unique_name,0) )*</code></pre>
+</div></div>
+<div class="paragraph"><p>When the kleene star is applied, transitions that go out of the machine and
+back into it are made. These are assigned a priority of zero by the leaving
+transition mechanism. This is less than the priority of one assigned to the
+transitions leaving the final states but not leaving the machine. When
+these transitions clash on the same character, the
+transition that stays in the machine takes precedence.  The transition
+that wraps around is dropped.</p></div>
+<div class="paragraph"><p>Note that this operator does not build a scanner in the traditional sense
+because there is never any backtracking. To build a scanner with backtracking
+use the Longest-Match machine construction described in
+<a href="#generating_scanners">Generating Scanners</a>.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_interface_to_host_program">5. Interface to Host Program</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The Ragel code generator is very flexible. The generated code has no
+dependencies and can be inserted in any function, perhaps inside a loop if
+desired.  The user is responsible for declaring and initializing a number of
+required variables, including the current state and the pointer to the input
+stream. These can live in any scope. Control of the input processing loop is
+also possible: the user may break out of the processing loop and return to it
+at any time.</p></div>
+<div class="paragraph"><p>In the case of the C, D, Go and OCaml host languages, Ragel is able to generate very
+fast-running code that implements state machines as directly executable code.
+Since very large files strain the host language compiler, table-based code
+generation is also supported. In the future, we hope to provide a partitioned,
+directly executable format that is able to reduce the burden on the host
+compiler by splitting large machines across multiple functions.</p></div>
+<div class="paragraph"><p>In the case of Java and Ruby, table-based code generation is the only code
+style supported. In the future, this may be expanded to include other code
+styles.</p></div>
+<div class="paragraph"><p>Ragel can be used to parse input in one block, or it can be used to parse input
+in a sequence of blocks as it arrives from a file or socket.  Parsing the input
+in a sequence of blocks brings with it a few responsibilities. If the parser
+utilizes a scanner, care must be taken to not break the input stream anywhere
+but token boundaries.  If pointers to the input stream are taken during
+parsing, care must be taken to not use a pointer that has been invalidated by
+movement to a subsequent block.  If the current input data pointer is moved
+backwards it must not be moved past the beginning of the current block.</p></div>
+<div class="paragraph"><p>The following example shows a simple Ragel program that does not have any
+actions. The example tests the first argument of the program against a number
+pattern and then prints the machine&#8217;s acceptance status.</p></div>
+<div class="listingblock">
+<div class="title">A basic Ragel example without any actions.</div>
+<div class="content">
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+%%{
+    machine foo;
+    write data;
+}%%
+int main( int argc, char **argv )
+{
+    int cs;
+    if ( argc &gt; 1 ) {
+        char *p = argv[1];
+        char *pe = p + strlen( p );
+        %%{
+            main := [0-9]+ ( '.' [0-9]+ )?;
+
+            write init;
+            write exec;
+        }%%
+    }
+    printf("result = %i\n", cs &gt;= foo_first_final );
+    return 0;
+}</code></pre>
+</div></div>
+<div class="sect2">
+<h3 id="variables_used_by_ragel">5.1. Variables Used by Ragel</h3>
+<div class="paragraph"><p>There are a number of variables that Ragel expects the user to declare. At a
+very minimum the <code>cs</code>, <code>p</code> and <code>pe</code> variables must be declared. In Go, Java,
+Ruby and OCaml code the <code>data</code> variable must also be declared. If EOF
+actions are used then the <code>eof</code> variable is required. If stack-based state
+machine control flow statements are used then the <code>stack</code> and <code>top</code> variables
+are required. If a scanner is declared then the <code>act</code>, <code>ts</code> and <code>te</code> variables
+must be declared.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>cs</code> - Current state. This must be an integer and it should persist
+across invocations of the machine when the data is broken into blocks that are
+processed independently. This variable may be modified from outside the
+execution loop, but not from within.
+</p>
+</li>
+<li>
+<p>
+<code>p</code> - Data pointer. In C/C<code>/D code this variable is expected to be a
+pointer to the character data to process. It should be initialized to the
+beginning of the data block on every run of the machine. In C</code> it is possible
+to use an object for the data pointers. The object should support comparison,
+dereferencing, and pre/post increment/decrement operations. In Go, Java, Ruby
+and OCaml it is used as an offset to <code>data</code> and must be an integer. In this
+case it should be initialized to zero on every run of the machine.
+</p>
+</li>
+<li>
+<p>
+<code>pe</code> - Data end pointer. This should be initialized to <code>p</code> plus
+the data length on every run of the machine. In C++ this can be defined as one
+increment operation past the last valid value. Or in the case of a zero-length
+input buffer the initial value of <code>p</code>. A In Go, Java, Ruby and OCaml code this
+should be initialized to the data length.
+</p>
+</li>
+<li>
+<p>
+<code>eof</code> - End of file pointer. This should be set to <code>pe</code> when
+the buffer block being processed is the last one, otherwise it should be set to
+null. In Go, Java, Ruby and OCaml code <code>-1</code> must be used instead of null. If the EOF
+event can be known only after the final buffer block has been processed, then
+it is possible to set <code>p = pe = eof</code> and run the execute block.
+</p>
+</li>
+<li>
+<p>
+<code>data</code> - This variable is only required in Go, Java, Ruby and OCaml code. It
+must be an array containing the data to process.
+</p>
+</li>
+<li>
+<p>
+<code>stack</code> - This must be an array of integers. It is used to store
+integer values representing states. If the stack must resize dynamically the
+<a href="#prepush">Pre-push</a> and <a href="#postpop">Post-Pop</a> statements can be used to do
+this.
+</p>
+</li>
+<li>
+<p>
+<code>top</code> - This must be an integer value and will be used as an offset
+to <code>stack</code>, giving the next available spot on the top of the stack.
+</p>
+</li>
+<li>
+<p>
+<code>act</code> - This must be an integer value. It is a variable sometimes
+used by scanner code to keep track of the most recent successful pattern match.
+</p>
+</li>
+<li>
+<p>
+<code>ts</code> - This must be a pointer to character data. In Go, Java, Ruby and
+OCaml code this must be an integer. See <a href="#generating_scanners">Generating Scanners</a> for more information.
+</p>
+</li>
+<li>
+<p>
+<code>te</code> - Also a pointer to character data.
+</p>
+</li>
+<li>
+<p>
+<code>nfa_bp</code> - NFA backtrack points. Only necessary if NFA features are used.
+This var must be an array of records containing at least a state and alphtype
+pointer.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>struct nfa_bp_rec
+{
+    long state;
+    char *p;
+};
+
+struct nfa_bp_rec nfa_bp[1024];</code></pre>
+</div></div>
+<div class="paragraph"><p>This array can be guarded against overflow or dynamically resized using
+<code>nfaprepush</code> and <code>nfapostpop</code> code blocks. If the <code>:nfa()</code> construct is being
+used, the record also needs to contain an <code>long pop;</code> field, and <code>long q_N</code>
+fields for each instance of the <code>:nfa()</code> construct, where N corresponds to the
+id specified in the <code>:nfa()</code> construct.</p></div>
+</li>
+<li>
+<p>
+<code>nfa_len</code> - Number of active nfa records. Must be initialized to zero.
+</p>
+</li>
+<li>
+<p>
+<code>nfa_count</code> - Number of NFA pops that have occurred. This is only for
+tracking purposes.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_alphtype_statement">5.2. Alphtype Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>alphtype unsigned int;</code></pre>
+</div></div>
+<div class="paragraph"><p>The alphtype statement specifies the alphabet data type that the machine
+operates on. During the compilation of the machine, integer literals are
+expected to be in the range of possible values of the alphtype. The default is
+<code>char</code> for all languages except Go where the default is <code>byte</code> and OCaml where
+the default is <code>int</code>.</p></div>
+<div class="paragraph"><p>C/C++/Objective-C:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>          char      unsigned char
+          short     unsigned short
+          int       unsigned int
+          long      unsigned long</code></pre>
+</div></div>
+<div class="paragraph"><p>Go:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>          byte
+          int8      uint8
+          int16     uint16
+          int32     uint32
+          int</code></pre>
+</div></div>
+<div class="paragraph"><p>Ruby:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>          char
+          int</code></pre>
+</div></div>
+<div class="paragraph"><p>Java:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>          char
+          byte
+          short
+          int</code></pre>
+</div></div>
+<div class="paragraph"><p>D:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>          char
+          byte      ubyte
+          short     ushort
+          wchar
+          int       uint
+          dchar</code></pre>
+</div></div>
+<div class="paragraph"><p>OCaml:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>          int</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_getkey_statement">5.3. Getkey Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>getkey fpc-&gt;id;</code></pre>
+</div></div>
+<div class="paragraph"><p>This statement specifies to Ragel how to retrieve the current character from
+from the pointer to the current element (<code>p</code>). Any expression that returns
+a value of the alphabet type
+may be used. The getkey statement may be used for looking into element
+structures or for translating the character to process. The getkey expression
+defaults to <code>(*p)</code>. In goto-driven machines the getkey expression may be
+evaluated more than once per element processed, therefore it should not incur a
+large cost nor preclude optimization.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_access_statement">5.4. Access Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>access fsm-&gt;;</code></pre>
+</div></div>
+<div class="paragraph"><p>The access statement specifies how the generated code should access the machine
+data that is persistent across processing buffer blocks. This applies to all
+variables except <code>p</code>, <code>pe</code> and <code>eof</code>. This includes <code>cs</code>, <code>top</code>, <code>stack</code>, <code>ts</code>,
+<code>te</code> and <code>act</code>. The access statement is useful if a machine is to be
+encapsulated inside a structure in C code. It can be used to give the name of a
+pointer to the structure.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_variable_statement">5.5. Variable Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>variable p fsm-&gt;p;</code></pre>
+</div></div>
+<div class="paragraph"><p>The variable statement specifies how to access a specific variable. All of the
+variables that are declared by the user and used by Ragel can be changed. This
+includes <code>p</code>, <code>pe</code>, <code>eof</code>, <code>cs</code>, <code>top</code>, <code>stack</code>, <code>ts</code>, <code>te</code> and <code>act</code>. In Go,
+Ruby, Java and OCaml code generation the <code>data</code> variable can also be changed.</p></div>
+</div>
+<div class="sect2">
+<h3 id="prepush">5.6. Pre-Push Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>prepush {
+    /* stack growing code */
+}</code></pre>
+</div></div>
+<div class="paragraph"><p>The prepush statement allows the user to supply stack management code that is
+written out during the generation of fcall, immediately before the current
+state is pushed to the stack. This statement can be used to test the number of
+available spaces and dynamically grow the stack if necessary.</p></div>
+</div>
+<div class="sect2">
+<h3 id="postpop">5.7. Post-Pop Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>postpop {
+    /* stack shrinking code */
+}</code></pre>
+</div></div>
+<div class="paragraph"><p>The postpop statement allows the user to supply stack management code that is
+written out during the generation of fret, immediately after the next state is
+popped from the stack. This statement can be used to dynamically shrink the
+stack.</p></div>
+</div>
+<div class="sect2">
+<h3 id="write_statement">5.8. Write Statement</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>write &lt;component&gt; [options];</code></pre>
+</div></div>
+<div class="paragraph"><p>The write statement is used to generate parts of the machine.
+There are seven
+components that can be generated by a write statement. These components make up the
+state machine&#8217;s data, initialization code, execution code, and export definitions.
+A write statement may appear before a machine is fully defined.
+This allows one to write out the data first then later define the machine where
+it is used. See the <a href="#fbreak_example">fbreak Example</a>.</p></div>
+<div class="sect3">
+<h4 id="_write_data">5.8.1. Write Data</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>write data [options];</code></pre>
+</div></div>
+<div class="paragraph"><p>The write data statement causes Ragel to emit the constant static data needed
+by the machine. In table-driven output styles (see
+<a href="#genout">Generated Output Style</a>) this is a collection of arrays that
+represent the states and transitions of the machine.  In goto-driven machines
+much less data is emitted. At the very minimum a start state <code>name_start</code>
+is generated.  All variables written out in machine data have both the
+<code>static</code> and <code>const</code> properties and are prefixed with the name of the
+machine and an underscore. The data can be placed inside a class, inside a
+function, or it can be defined as global data.</p></div>
+<div class="paragraph"><p>Two variables are written that may be used to test the state of the machine
+after a buffer block has been processed. The <code>name_error</code> variable gives
+the id of the state that the machine moves into when it cannot find a valid
+transition to take. The machine immediately breaks out of the processing loop when
+it finds itself in the error state. The error variable can be compared to the
+current state to determine if the machine has failed to parse the input. If the
+machine is complete, that is from every state there is a transition to a proper
+state on every possible character of the alphabet, then no error state is required
+and this variable will be set to -1.</p></div>
+<div class="paragraph"><p>The <code>name_first_final</code> variable stores the id of the first final state.
+All of the machine&#8217;s states are sorted by their final state status before
+having their ids assigned. Checking if the machine has accepted its input can
+then be done by checking if the current state is greater-than or equal to the
+first final state.</p></div>
+<div class="paragraph"><p>Data generation has several options:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>noerror</code> - Do not generate the integer
+variable that gives the id of the error state.
+</p>
+</li>
+<li>
+<p>
+<code>nofinal</code> - Do not generate the integer variable
+that gives the id of the first final state.
+</p>
+</li>
+<li>
+<p>
+<code>noprefix</code> - Do not prefix the variable names with the name of the machine.
+</p>
+</li>
+</ul></div>
+<div class="listingblock" id="fbreak_example">
+<div class="title">Use of <code>noend</code> write option and the <code>fbreak</code> statement for processing a string.</div>
+<div class="content">
+<pre><code>#include &lt;stdio.h&gt;
+%% machine foo;
+%% write data;
+int main( int argc, char **argv )
+{
+    int cs, res = 0;
+    if ( argc &gt; 1 ) {
+        char *p = argv[1];
+        %%{
+            main :=
+                [a-z]+
+                0 @{ res = 1; fbreak; };
+            write init;
+            write exec noend;
+        }%%
+    }
+    printf("execute = %i\n", res );
+    return 0;
+}</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_write_start_first_final_and_error">5.8.2. Write Start, First Final and Error</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>write start;
+write first_final;
+write error;</code></pre>
+</div></div>
+<div class="paragraph"><p>These three write statements provide an alternative means of accessing the
+<code>start</code>, <code>first_final</code> and <code>error</code> states. If there are many different machine
+specifications in one file it is easy to get the prefix for these wrong. This
+is especially true if the state machine boilerplate is frequently made by a
+copy-paste-edit process. These write statements allow the problem to be
+avoided. They can be used as follows:</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>/* Did parsing succeed? */
+if ( cs &lt; %%{ write first_final; }%% ) {
+    result = ERR_PARSE_ERROR;
+    goto fail;
+}</code></pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_write_init">5.8.3. Write Init</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>write init [options];</code></pre>
+</div></div>
+<div class="paragraph"><p>The write init statement causes Ragel to emit initialization code. This should
+be executed once before the machine is started. At a very minimum this sets the
+current state to the start state. If other variables are needed by the
+generated code, such as call stack variables or scanner management
+variables, they are also initialized here.</p></div>
+<div class="paragraph"><p>The <code>nocs</code> option to the write init statement will cause ragel to skip
+intialization of the cs variable. This is useful if the user wishes to use
+custom logic to decide which state the specification should start in.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_write_exec">5.8.4. Write Exec</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>write exec [options];</code></pre>
+</div></div>
+<div class="paragraph"><p>The write exec statement causes Ragel to emit the state machine&#8217;s execution
+code. Ragel expects several variables to be available to this code. At a very
+minimum, the generated code needs access to the current character position <code>p</code>,
+the ending position <code>pe</code> and the current state <code>cs</code> (though <code>pe</code> can be omitted
+using the <code>noend</code> write option). The <code>p</code> variable is the cursor that the
+execute code will used to traverse the input. The <code>pe</code> variable should be set
+up to point to one position past the last valid character in the buffer.</p></div>
+<div class="paragraph"><p>Other variables are needed when certain features are used. For example using
+the <code>fcall</code> or <code>fret</code> statements requires <code>stack</code> and <code>top</code> variables to be
+defined. If a longest-match construction is used, variables for managing
+backtracking are required.</p></div>
+<div class="paragraph"><p>The write exec statement has one option. The <code>noend</code> option tells Ragel to
+generate code that ignores the end position <code>pe</code>. In this case the user must
+explicitly break out of the processing loop using <code>fbreak</code>, otherwise the
+machine will continue to process characters until it moves into the error
+state. This option is useful if one wishes to process a null terminated string.
+Rather than traverse the string to discover then length before processing the
+input, the user can break out when the null character is seen.  The
+<a href="#fbreak_example">fbreak Example</a> shows the use of the <code>noend</code> write option and the
+<code>fbreak</code> statement for processing a string.</p></div>
+</div>
+<div class="sect3">
+<h4 id="export">5.8.5. Write Exports</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>write exports;</code></pre>
+</div></div>
+<div class="paragraph"><p>The export feature can be used to export simple machine definitions. Machine definitions
+are marked for export using the <code>export</code> keyword.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>export machine_to_export = 0x44;</code></pre>
+</div></div>
+<div class="paragraph"><p>When the write exports statement is used these machines are written out in the
+generated code. Defines are used for C and constant integers are used for D,
+Java, Ruby and OCaml. See <a href="#import">Importing Definitions</a> for a description
+of the import statement.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_maintaining_pointers_to_input_data">5.9. Maintaining Pointers to Input Data</h3>
+<div class="paragraph"><p>In the creation of any parser it is not uncommon to require the collection of
+the data being parsed.  It is always possible to collect data into a growable
+buffer as the machine moves over it, however the copying of data is a somewhat
+wasteful use of processor cycles. The most efficient way to collect data from
+the parser is to set pointers into the input then later reference them.  This
+poses a problem for uses of Ragel where the input data arrives in blocks, such
+as over a socket or from a file. If a pointer is set in one buffer block but
+must be used while parsing a following buffer block, some extra consideration
+to correctness must be made.</p></div>
+<div class="paragraph"><p>The scanner constructions exhibit this problem, requiring the maintenance code
+described in <a href="#generating_scanners">Generating Scanners</a>. If a longest-match
+construction has been used somewhere in the machine then it is possible to take
+advantage of the required prefix maintenance code in the driver program to
+ensure pointers to the input are always valid. If laying down a pointer one can
+set <code>ts</code> at the same spot or ahead of it. When data is shifted in between loops
+the user must also shift the pointer.  In this way it is possible to maintain
+pointers to the input that will always be consistent.</p></div>
+<div class="paragraph"><p>In general, there are two approaches for guaranteeing the consistency of
+pointers to input data. The first approach is the one just described; lay down
+a marker from an action, then later ensure that the data the marker points to
+is preserved ahead of the buffer on the next execute invocation. This approach
+is good because it allows the parser to decide on the pointer-use boundaries,
+which can be arbitrarily complex parsing conditions. A downside is that it
+requires any pointers that are set to be corrected in between execute
+invocations.</p></div>
+<div class="paragraph"><p>The alternative is to find the pointer-use boundaries before invoking the execute
+routine, then pass in the data using these boundaries. For example, if the
+program must perform line-oriented processing, the user can scan backwards from
+the end of an input block that has just been read in and process only up to the
+first found newline. On the next input read, the new data is placed after the
+partially read line and processing continues from the beginning of the line.
+An example of line-oriented processing is given below.</p></div>
+<div class="listingblock" id="line_oriented">
+<div class="title">An example of line-oriented processing.</div>
+<div class="content">
+<pre><code>    int have = 0;
+    while ( 1 ) {
+        char *p, *pe, *data = buf + have;
+        int len, space = BUFSIZE - have;
+
+        if ( space == 0 ) {
+            fprintf(stderr, "BUFFER OUT OF SPACE\n");
+            exit(1);
+        }
+
+        len = fread( data, 1, space, stdin );
+        if ( len == 0 )
+            break;
+
+        /* Find the last newline by searching backwards. */
+        p = buf;
+        pe = data + len - 1;
+        while ( *pe != '\n' &amp;&amp; pe &gt;= buf )
+            pe--;
+        pe += 1;
+
+        %% write exec;
+
+        /* How much is still in the buffer? */
+        have = data + len - pe;
+        if ( have &gt; 0 )
+            memmove( buf, pe, have );
+
+        if ( len &lt; space )
+            break;
+    }</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_specifying_the_host_language">5.10. Specifying the Host Language</h3>
+<div class="paragraph"><p>The <code>ragel</code> program has a number of options for specifying the host
+language. The host-language options are:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>-C</code> for C/C++/Objective-C code (default)
+</p>
+</li>
+<li>
+<p>
+<code>--asm</code> or <code>--gas-x86-64-sys-v</code> for GNU AS, x86_64, System V ABI.
+</p>
+</li>
+<li>
+<p>
+<code>-D</code> for D code.
+</p>
+</li>
+<li>
+<p>
+<code>-Z</code> for Go code.
+</p>
+</li>
+<li>
+<p>
+<code>-J</code> for Java code.
+</p>
+</li>
+<li>
+<p>
+<code>-R</code> for Ruby code.
+</p>
+</li>
+<li>
+<p>
+<code>-A</code> for C# code.
+</p>
+</li>
+<li>
+<p>
+<code>-O</code> for OCaml code.
+</p>
+</li>
+<li>
+<p>
+<code>-U</code> for Rust
+</p>
+</li>
+<li>
+<p>
+<code>-Y</code> for Julia
+</p>
+</li>
+<li>
+<p>
+<code>-K</code> for Crack
+</p>
+</li>
+<li>
+<p>
+<code>-P</code> for JavaScript
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="genout">5.11. Choosing a Generated Code Style</h3>
+<div class="paragraph"><p>There are three styles of code output to choose from. Code style affects the
+size and speed of the compiled binary. Changing code style does not require any
+change to the Ragel program. There are two table-driven formats and a goto
+driven format.</p></div>
+<div class="paragraph"><p>In addition to choosing a style to emit, there are various levels of action
+code reuse to choose from.  The maximum reuse levels (<code>-T0</code>, <code>-F0</code>
+and <code>-G0</code>) ensure that no FSM action code is ever duplicated by encoding
+each transition&#8217;s action list as static data and iterating
+through the lists on every transition. This will normally result in a smaller
+binary. The less action reuse options (<code>-T1</code>, <code>-F1</code> and <code>-G1</code>)
+will usually produce faster running code by expanding each transition&#8217;s action
+list into a single block of code, eliminating the need to iterate through the
+lists. This duplicates action code instead of generating the logic necessary
+for reuse. Consequently the binary will be larger. However, this tradeoff applies to
+machines with moderate to dense action lists only. If a machine&#8217;s transitions
+frequently have less than two actions then the less reuse options will actually
+produce both a smaller and a faster running binary due to less action sharing
+overhead. The best way to choose the appropriate code style for your
+application is to perform your own tests.</p></div>
+<div class="paragraph"><p>The table-driven FSM represents the state machine as constant static data. There are
+tables of states, transitions, indices and actions. The current state is
+stored in a variable. The execution is simply a loop that looks up the current
+state, looks up the transition to take, executes any actions and moves to the
+target state. In general, the table-driven FSM can handle any machine, produces
+a smaller binary and requires a less expensive host language compile, but
+results in slower running code.  Since the table-driven format is the most
+flexible it is the default code style.</p></div>
+<div class="paragraph"><p>The flat table-driven machine is a table-based machine that is optimized for
+small alphabets. Where the regular table machine uses the current character as
+the key in a binary search for the transition to take, the flat table machine
+uses the current character as an index into an array of transitions. This is
+faster in general, however is only suitable if the span of possible characters
+is small.</p></div>
+<div class="paragraph"><p>The goto-driven FSM represents the state machine using goto and switch
+statements. The execution is a flat code block where the transition to take is
+computed using switch statements and directly executable binary searches.  In
+general, the goto FSM produces faster code but results in a larger binary and a
+more expensive host language compile.</p></div>
+<div class="paragraph"><p>The goto-driven format has an additional action reuse level (<code>-G2</code>) that writes
+actions directly into the state transitioning logic rather than putting all the
+actions together into a single switch. Generally this produces faster running
+code because it allows the machine to encode the current state using the
+processor&#8217;s instruction pointer. Again, sparse machines may actually compile to
+smaller binaries when <code>-G2</code> is used due to less state and action management
+overhead. For many parsing applications <code>-G2</code> is the preferred output format.</p></div>
+<div class="paragraph"><p>Code Output Style Options</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>-T0</code> - binary search table-driven
+</p>
+</li>
+<li>
+<p>
+<code>-T1</code> - binary search, expanded actions
+</p>
+</li>
+<li>
+<p>
+<code>-F0</code> - flat table-driven
+</p>
+</li>
+<li>
+<p>
+<code>-F1</code> - flat table, expanded actions
+</p>
+</li>
+<li>
+<p>
+<code>-G0</code> - goto-driven
+</p>
+</li>
+<li>
+<p>
+<code>-G1</code> - goto, expanded actions
+</p>
+</li>
+<li>
+<p>
+<code>-G2</code> - goto, in-place actions
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Due to limitations of the host languages, not all styles are supported for all
+host languages. The following table shows what is supported.</p></div>
+<div class="tableblock">
+<table rules="all"
+width="50%"
+frame="border"
+cellspacing="0" cellpadding="4">
+<col width="50%" />
+<col width="50%" />
+<tbody>
+<tr>
+<td align="left" valign="top"><p class="table">C</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1 -G0 -G1 -G2</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">ASM</p></td>
+<td align="left" valign="top"><p class="table"><code>-G2</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">D</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1 -G0 -G1 -G2</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Go</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1 -G0 -G1 -G2</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">C#</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1 -G0 -G1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Java</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Ruby</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">OCaml</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Rust</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Julia</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">Crack</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+<tr>
+<td align="left" valign="top"><p class="table">JavaScript</p></td>
+<td align="left" valign="top"><p class="table"><code>-T0 -T1 -F0 -F1</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_beyond_the_basic_model">6. Beyond the Basic Model</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="modularization">6.1. Parser Modularization</h3>
+<div class="paragraph"><p>It is possible to use Ragel&#8217;s machine construction and action embedding
+operators to specify an entire parser using a single regular expression. In
+many cases this is the desired way to specify a parser in Ragel. However, in
+some scenarios the language to parse may be so large that it is difficult to
+think about it as a single regular expression. It may also shift between distinct
+parsing strategies, in which case modularization into several coherent blocks
+of the language may be appropriate.</p></div>
+<div class="paragraph"><p>It may also be the case that patterns that compile to a large number of states
+must be used in a number of different contexts and referencing them in each
+context results in a very large state machine. In this case, an ability to reuse
+parsers would reduce code size.</p></div>
+<div class="paragraph"><p>To address this, distinct regular expressions may be instantiated and linked
+together by means of a jumping and calling mechanism. This mechanism is
+analogous to the jumping to and calling of processor instructions. A jump
+command, given in action code, causes control to be immediately passed to
+another portion of the machine by way of setting the current state variable. A
+call command causes the target state of the current transition to be pushed to
+a state stack before control is transferred.  Later on, the original location
+may be returned to with a return statement. In the following example, distinct
+state machines are used to handle the parsing of two types of headers.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action return { fret; }
+action call_date { fcall date; }
+action call_name { fcall name; }
+
+# A parser for date strings.
+date := [0-9][0-9] '/'
+        [0-9][0-9] '/'
+        [0-9][0-9][0-9][0-9] '\n' @return;
+
+# A parser for name strings.
+name := ( [a-zA-Z]+ | ' ' )** '\n' @return;
+
+# The main parser.
+headers =
+    ( 'from' | 'to' ) ':' @call_name |
+    ( 'departed' | 'arrived' ) ':' @call_date;
+
+main := headers*;</code></pre>
+</div></div>
+<div class="paragraph"><p>Calling and jumping should be used carefully as they are operations that take
+one out of the domain of regular languages. A machine that contains a call or
+jump statement in one of its actions should be used as an argument to a machine
+construction operator only with considerable care. Since DFA transitions may
+actually represent several NFA transitions, a call or jump embedded in one
+machine can inadvertently terminate another machine that it shares prefixes
+with. Despite this danger, theses statements have proven useful for tying
+together sub-parsers of a language into a parser for the full language,
+especially for the purpose of modularizing code and reducing the number of
+states when the machine contains frequently recurring patterns.</p></div>
+<div class="paragraph"><p>The section on <a href="#vals">Embedded Values and Statements</a> describes the jump and
+call statements that are used to transfer control. These statements make use of
+two variables that must be declared by the user, <code>stack</code> and <code>top</code>. The <code>stack</code>
+variable must be an array of integers and <code>top</code> must be a single integer, which
+will point to the next available space in <code>stack</code>. The <a href="#prepush">Pre-Push</a>
+and <a href="#postpop">Post-Pop</a> statements which can be used to implement a
+dynamically resizable array.</p></div>
+</div>
+<div class="sect2">
+<h3 id="labels">6.2. Referencing Names</h3>
+<div class="paragraph"><p>This section describes how to reference names in epsilon transitions
+(<a href="#state_charts">State Charts</a>) and action-based control-flow statements such
+as <code>fgoto</code>. There is a hierarchy of names implied in a Ragel specification.  At
+the top level are the machine instantiations. Beneath the instantiations are
+labels and references to machine definitions. Beneath those are more labels and
+references to definitions, and so on.</p></div>
+<div class="paragraph"><p>Any name reference may contain multiple components separated with the <code>::</code>
+compound symbol.  The search for the first component of a name reference is
+rooted at the join expression that the epsilon transition or action embedding
+is contained in. If the name reference is not contained in a join,
+the search is rooted at the machine definition that the epsilon transition or
+action embedding is contained in. Each component after the first is searched
+for beginning at the location in the name tree that the previous reference
+component refers to.</p></div>
+<div class="paragraph"><p>In the case of action-based references, if the action is embedded more than
+once, the local search is performed for each embedding and the result is the
+union of all the searches. If no result is found for action-based references then
+the search is repeated at the root of the name tree.  Any action-based name
+search may be forced into a strictly global search by prefixing the name
+reference with <code>::</code>.</p></div>
+<div class="paragraph"><p>The final component of the name reference must resolve to a unique entry point.
+If a name is unique in the entire name tree it can be referenced as is. If it
+is not unique it can be specified by qualifying it with names above it in the
+name tree. However, it can always be renamed.</p></div>
+</div>
+<div class="sect2">
+<h3 id="generating_scanners">6.3. Scanners</h3>
+<div class="paragraph"><p>Scanners are very much intertwined with regular-languages and their
+corresponding processors. For this reason Ragel supports the definition of
+scanners.  The generated code will repeatedly attempt to match patterns from a
+list, favouring longer patterns over shorter patterns.  In the case of
+equal-length matches, the generated code will favour patterns that appear ahead
+of others. When a scanner makes a match it executes the user code associated
+with the match, consumes the input then resumes scanning.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&lt;machine_name&gt; := |*
+        pattern1 =&gt; action1;
+        pattern2 =&gt; action2;
+        ...
+    *|;</code></pre>
+</div></div>
+<div class="paragraph"><p>On the surface, Ragel scanners are similar to those defined by Lex. Though
+there is a key distinguishing feature: patterns may be arbitrary Ragel
+expressions and can therefore contain embedded code. With a Ragel-based scanner
+the user need not wait until the end of a pattern before user code can be
+executed.</p></div>
+<div class="paragraph"><p>Scanners can be used to process sub-languages, as well as for tokenizing
+programming languages. In the following example a scanner is used to tokenize
+the contents of a header field.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>word = [a-z]+;
+head_name = 'Header';
+
+header := |*
+    word;
+    ' ';
+    '\n' =&gt; { fret; };
+*|;
+
+main := ( head_name ':' @{ fcall header; } )*;</code></pre>
+</div></div>
+<div class="paragraph"><p>The scanner construction has a purpose similar to the longest-match kleene star
+operator <code>**</code>. The key
+difference is that a scanner is able to backtrack to match a previously matched
+shorter string when the pursuit of a longer string fails.  For this reason the
+scanner construction operator is not a pure state machine construction
+operator. It relies on several variables that enable it to backtrack and make
+pointers to the matched input text available to the user.  For this reason
+scanners must be immediately instantiated. They cannot be defined inline or
+referenced by another expression. Scanners must be jumped to or called.</p></div>
+<div class="paragraph"><p>Scanners rely on the <code>ts</code>, <code>te</code> and <code>act</code> variables to be present so that they
+can backtrack and make pointers to the matched text available to the user. If
+input is processed using multiple calls to the execute code then the user must
+ensure that when a token is only partially matched that the prefix is preserved
+on the subsequent invocation of the execute code.</p></div>
+<div class="paragraph"><p>The <code>ts</code> variable must be defined as a pointer to the input data.
+It is used for recording where the current token match begins. This variable
+may be used in action code for retrieving the text of the current match.  Ragel
+ensures that in between tokens and outside of the longest-match machines that
+this pointer is set to null. In between calls to the execute code the user must
+check if <code>ts</code> is set and if so, ensure that the data it points to is
+preserved ahead of the next buffer block. This is described in more detail
+below.</p></div>
+<div class="paragraph"><p>The <code>te</code> variable must also be defined as a pointer to the input data.
+It is used for recording where a match ends and where scanning of the next
+token should begin. This can also be used in action code for retrieving the
+text of the current match.</p></div>
+<div class="paragraph"><p>The <code>act</code> variable must be defined as an integer type. It is used for recording
+the identity of the last pattern matched when the scanner must go past a
+matched pattern in an attempt to make a longer match. If the longer match fails
+it may need to consult the <code>act</code> variable. In some cases, use of the <code>act</code>
+variable can be avoided because the value of the current state is enough
+information to determine which token to accept, however in other cases this is
+not enough and so the <code>act</code> variable is used.</p></div>
+<div class="paragraph"><p>When the longest-match operator is in use, the user&#8217;s driver code must take on
+some buffer management functions. The following algorithm gives an overview of
+the steps that should be taken to properly use the longest-match operator.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Read a block of input data.
+</p>
+</li>
+<li>
+<p>
+Run the execute code.
+</p>
+</li>
+<li>
+<p>
+If <code>ts</code> is set, the execute code will expect the incomplete
+token to be preserved ahead of the buffer on the next invocation of the execute
+code.
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+Shift the data beginning at <code>ts</code> and ending at <code>pe</code> to the
+beginning of the input buffer.
+</p>
+</li>
+<li>
+<p>
+Reset <code>ts</code> to the beginning of the buffer.
+</p>
+</li>
+<li>
+<p>
+Shift <code>te</code> by the distance from the old value of <code>ts</code>
+to the new value. The <code>te</code> variable may or may not be valid.  There is
+no way to know if it holds a meaningful value because it is not kept at null
+when it is not in use. It can be shifted regardless.
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+Read another block of data into the buffer, immediately following any
+preserved data.
+</p>
+</li>
+<li>
+<p>
+Run the scanner on the new data.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The following listing shows the required handling of an input stream in which a
+token is broken by the input block boundaries. After processing up to and
+including the &#8220;t&#8221; of &#8220;characters&#8221;, the prefix of the string token must be
+retained and processing should resume at the &#8220;e&#8221; on the next iteration of the
+execute code.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>      a)           A stream "of characters" to be scanned.
+                   |        |          |
+                   p        ts         pe
+
+      b)           "of characters" to be scanned.
+                   |          |        |
+                   ts         p        pe</code></pre>
+</div></div>
+<div class="paragraph"><p>If one uses a large input buffer for collecting input then the number of times
+the shifting must be done will be small. Furthermore, if one takes care not to
+define tokens that are allowed to be very long and instead processes these
+items using pure state machines or sub-scanners, then only a small amount of
+data will ever need to be shifted.</p></div>
+<div class="paragraph"><p>Following an invocation of the execute code there may be a partially matched
+token (a). The data of the partially matched token must be preserved ahead of
+the new data on the next invocation (b).</p></div>
+<div class="paragraph"><p>Since scanners attempt to make the longest possible match of input, patterns
+such as identifiers require one character of lookahead in order to trigger a
+match. In the case of the last token in the input stream the user must ensure
+that the <code>eof</code> variable is set so that the final token is flushed out.</p></div>
+<div class="paragraph"><p>The following is an an example scanner processing loop.</p></div>
+<div class="listingblock">
+<div class="title">A processing loop for a scanner.</div>
+<div class="content">
+<pre><code>    int have = 0;
+    bool done = false;
+    while ( !done ) {
+        /* How much space is in the buffer? */
+        int space = BUFSIZE - have;
+        if ( space == 0 ) {
+            /* Buffer is full. */
+            cerr &lt;&lt; "TOKEN TOO BIG" &lt;&lt; endl;
+            exit(1);
+        }
+
+        /* Read in a block after any data we already have. */
+        char *p = inbuf + have;
+        cin.read( p, space );
+        int len = cin.gcount();
+
+        char *pe = p + len;
+        char *eof = 0;
+
+        /* If no data was read indicate EOF. */
+        if ( len == 0 ) {
+            eof = pe;
+            done = true;
+        }
+
+        %% write exec;
+
+        if ( cs == Scanner_error ) {
+            /* Machine failed before finding a token. */
+            cerr &lt;&lt; "PARSE ERROR" &lt;&lt; endl;
+            exit(1);
+        }
+
+        if ( ts == 0 )
+            have = 0;
+        else {
+            /* There is a prefix to preserve, shift it over. */
+            have = pe - ts;
+            memmove( inbuf, ts, have );
+            te = inbuf + (te-ts);
+            ts = inbuf;
+        }
+    }</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="state_charts">6.4. State Charts</h3>
+<div class="paragraph"><p>In addition to supporting the construction of state machines using regular
+languages, Ragel provides a way to manually specify state machines using
+state charts.  The comma operator combines machines together without any
+implied transitions. The user can then manually link machines by specifying
+epsilon transitions with the <code>-&gt;</code> operator.  Epsilon transitions are drawn
+between the final states of a machine and entry points defined by labels.  This
+makes it possible to build machines using the explicit state-chart method while
+making minimal changes to the Ragel language.</p></div>
+<div class="paragraph"><p>An interesting feature of Ragel&#8217;s state chart construction method is that it
+can be mixed freely with regular expression constructions. A state chart may be
+referenced from within a regular expression, or a regular expression may be
+used in the definition of a state chart transition.</p></div>
+<div class="sect3">
+<h4 id="_join">6.4.1. Join</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr , expr , ...</code></pre>
+</div></div>
+<div class="paragraph"><p>Join a list of machines together without
+drawing any transitions, without setting up a start state, and without
+designating any final states. Transitions between the machines may be specified
+using labels and epsilon transitions. The start state must be explicity
+specified with the &#8220;start&#8221; label. Final states may be specified with an
+epsilon transition to the implicitly created &#8220;final&#8221; state. The join
+operation allows one to build machines using a state chart model.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_label">6.4.2. Label</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>label: expr</code></pre>
+</div></div>
+<div class="paragraph"><p>Attaches a label to an expression. Labels can be
+used as the target of epsilon transitions and explicit control transfer
+statements such as <code>fgoto</code> and <code>fnext</code> in action
+code.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_epsilon">6.4.3. Epsilon</h4>
+<div class="listingblock">
+<div class="content">
+<pre><code>expr -&gt; label</code></pre>
+</div></div>
+<div class="paragraph"><p>Draws an epsilon transition to the state defined by <code>label</code>.  Epsilon
+transitions are made deterministic when join operators are evaluated. Epsilon
+transitions that are not in a join operation are made deterministic when the
+machine definition that contains the epsilon is complete. See <a href="#labels">Referencing Names</a> for information on referencing labels.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_simplifying_state_charts">6.4.4. Simplifying State Charts</h4>
+<div class="paragraph"><p>There are two benefits to providing state charts in Ragel. The first is that it
+allows us to take a state chart with a full listing of states and transitions
+and simplify it in selective places using regular expressions.</p></div>
+<div class="paragraph"><p>The state chart method of specifying parsers is very common.  It is an
+effective programming technique for producing robust code. The key disadvantage
+becomes clear when one attempts to comprehend a large parser specified in this
+way.  These programs usually require many lines, causing logic to be spread out
+over large distances in the source file. Remembering the function of a large
+number of states can be difficult and organizing the parser in a sensible way
+requires discipline because branches and repetition present many file layout
+options.  This kind of programming takes a specification with inherent
+structure such as looping, alternation and concatenation and expresses it in a
+flat form.</p></div>
+<div class="paragraph"><p>If we could take an isolated component of a manually programmed state chart,
+that is, a subset of states that has only one entry point, and implement it
+using regular language operators then we could eliminate all the explicit
+naming of the states contained in it. By eliminating explicitly named states
+and replacing them with higher-level specifications we simplify a state machine
+specification.</p></div>
+<div class="paragraph"><p>For example, sometimes chains of states are needed, with only a small number of
+possible characters appearing along the chain. These can easily be replaced
+with a concatenation of characters. Sometimes a group of common states
+implement a loop back to another single portion of the machine. Rather than
+manually duplicate all the transitions that loop back, we may be able to
+express the loop using a kleene star operator.</p></div>
+<div class="paragraph"><p>Ragel allows one to take this state map simplification approach. We can build
+state machines using a state map model and implement portions of the state map
+using regular languages. In place of any transition in the state machine,
+entire sub-machines can be given. These can encapsulate functionality
+defined elsewhere. An important aspect of the Ragel approach is that when we
+wrap up a collection of states using a regular expression we do not lose
+access to the states and transitions. We can still execute code on the
+transitions that we have encapsulated.</p></div>
+</div>
+<div class="sect3">
+<h4 id="down">6.4.5. Dropping Down One Level of Abstraction</h4>
+<div class="paragraph"><p>The second benefit of incorporating state charts into Ragel is that it permits
+us to bypass the regular language abstraction if we need to. Ragel&#8217;s action
+embedding operators are sometimes insufficient for expressing certain parsing
+tasks.  In the same way that is useful for C language programmers to drop down
+to assembly language programming using embedded assembler, it is sometimes
+useful for the Ragel programmer to drop down to programming with state charts.</p></div>
+<div class="paragraph"><p>In the following example, we wish to buffer the characters of an XML CDATA
+sequence. The sequence is terminated by the string <code>]]&gt;</code>. The challenge
+in our application is that we do not wish the terminating characters to be
+buffered. An expression of the form <code>any* @buffer :&gt;&gt; ']]&gt;'</code> will not work
+because the buffer will always contain the characters <code>]]</code> on the end.
+Instead, what we need is to delay the buffering of <code>]</code>
+characters until a time when we
+abandon the terminating sequence and go back into the main loop. There is no
+easy way to express this using Ragel&#8217;s regular expression and action embedding
+operators, and so an ability to drop down to the state chart method is useful.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action bchar { buff( fpc ); }    # Buffer the current character.
+action bbrack1 { buff( "]" ); }
+action bbrack2 { buff( "]]" ); }
+
+CDATA_body =
+start: (
+     ']' -&gt; one |
+     (any-']') @bchar -&gt;start
+),
+one: (
+     ']' -&gt; two |
+     [^\]] @bbrack1 @bchar -&gt;start
+),
+two: (
+     '&gt;' -&gt; final |
+     ']' @bbrack1 -&gt; two |
+     [^&gt;\]] @bbrack2 @bchar -&gt;start
+);</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="dropdown.png" alt="dropdown.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="semantic">6.5. Semantic Conditions</h3>
+<div class="sect3">
+<h4 id="_semantic_conditions">6.5.1. Semantic Conditions</h4>
+<div class="paragraph"><p>Many communication protocols contain variable-length fields, where the length
+of the field is given ahead of the field as a value. This
+problem cannot be expressed using regular languages because of its
+context-dependent nature. The prevalence of variable-length fields in
+communication protocols motivated us to introduce semantic conditions into
+the Ragel language.</p></div>
+<div class="paragraph"><p>A semantic condition is a block of user code that is interpreted as an
+expression and evaluated immediately
+before a transition is taken. If the code returns a value of true, the
+transition may be taken.  We can now embed code that extracts the length of a
+field, then proceed to match $n$ data values.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action rec_num { i = 0; n = getnumber(); }
+action test_len { i++ &lt; n }
+data_fields = (
+    'd'
+    [0-9]+ %rec_num
+    ':'
+    ( [a-z] when test_len )*
+)**;</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="conds1.png" alt="conds1.png" />
+</div>
+</div>
+<div class="paragraph"><p>The Ragel implementation of semantic conditions does not force us to give up the
+compositional property of Ragel definitions. For example, a machine that tests
+the length of a field using conditions can be unioned with another machine
+that accepts some of the same strings, without the two machines interfering with
+one another. The user need not be concerned about whether or not the result of the
+semantic condition will affect the matching of the second machine.</p></div>
+<div class="paragraph"><p>To see this, first consider that when a user associates a condition with an
+existing transition, the transition&#8217;s label is translated from the base character
+to its corresponding value in the space that represents &#8220;condition $c$ true&#8221;. Should
+the determinization process combine a state that has a conditional transition
+with another state that has a transition on the same input character but
+without a condition, then the condition-less transition first has its label
+translated into two values, one to its corresponding value in the space that
+represents &#8220;condition $c$ true&#8221; and another to its corresponding value in the
+space that represents &#8220;condition $c$ false&#8221;. It
+is then safe to combine the two transitions. This is shown in the following
+example.  Two intersecting patterns are unioned, one with a condition and one
+without. The condition embedded in the first pattern does not affect the second
+pattern.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action test_len { i++ &lt; n }
+action one { /* accept pattern one */ }
+action two { /* accept pattern two */ }
+patterns =
+    ( [a-z] when test_len )+ %one |
+    [a-z][a-z0-9]* %two;
+main := patterns '\n';</code></pre>
+</div></div>
+<div class="imageblock" style="text-align:left;">
+<div class="content">
+<img src="conds2.png" alt="conds2.png" />
+</div>
+</div>
+<div class="paragraph"><p>There are many more potential uses for semantic conditions. The user is free to
+use arbitrary code and may therefore perform actions such as looking up names
+in dictionaries, validating input using external parsing mechanisms or
+performing checks on the semantic structure of input seen so far. In the next
+section we describe how Ragel accommodates several common parser engineering
+problems.</p></div>
+<div class="paragraph"><p>The semantic condition feature works only with alphabet types that are smaller
+in width than the <code>long</code> type. To implement semantic conditions Ragel
+needs to be able to allocate characters from the alphabet space. Ragel uses
+these allocated characters to express "character C with condition P true" or "C
+with P false." Since internally Ragel uses longs to store characters there is
+no room left in the alphabet space unless an alphabet type smaller than long is
+used.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_condition_based_repetition">6.5.2. Condition Based Repetition</h4>
+<div class="paragraph"><p>New in ragel 7 is a construct designed to simplify the use of conditions to
+control repetition. While possible to count properly using condition embedding
+operators, there is a corner case that proves difficult. If the zero-width case
+is to be accepted properly, some knowledge of what is before and after is
+necessary and tests need to be embedded there. The <code>:cond()</code> operator is
+designed to solve this problem, automatically embedding actions such that a
+zero count is possible.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>:cond( &lt;expression&gt;,
+        &lt;init&gt;, &lt;inc&gt;, &lt;min&gt; [ , &lt;max&gt; ] ):</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>expression</code> is the ragel-expression that is to be repeated.
+</p>
+</li>
+<li>
+<p>
+<code>init</code> is an action that is used to initialize the state.
+</p>
+</li>
+<li>
+<p>
+<code>inc</code> is an action that is used to increment the count.
+</p>
+</li>
+<li>
+<p>
+<code>min</code> is a condition used to test if the minimal count has been achieved.
+</p>
+</li>
+<li>
+<p>
+<code>max</code> is an optional condition used to test if the maximum count has been achieved.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The <code>:cond</code> construct is a synonym for <code>:condstar</code>. Ragel also supports
+<code>:condplus</code>, which does not allow the zero-width case. There must be at least
+one item.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_nfa_features">6.6. NFA Features</h3>
+<div class="paragraph"><p>New in Ragel 7 are features for specifying non-deterministic machines. Prior to
+this, ragel always produced DFAs, so these features represent a departure
+from the standard runtime model. They allow us to cope with very large state
+machines, without having to compromise on the language matched, or devise some
+techniques outside of the ragel language.</p></div>
+<div class="paragraph"><p>The NFA features require that the programmer make available <code>nfa_bp</code>, <code>nfa_len</code>
+and <code>nfa_count</code> variables. See the section <a href="#variables_used_by_ragel">Varibles Used by Ragel</a></p></div>
+<div class="paragraph"><p>Note that NFA features are non compatible with non-contiguous buffer blocks. It
+requires being able to set p to some previously stashed value. If the buffer is
+no longer available, ragel will attempt to backtrack into invalid data.</p></div>
+<div class="sect3">
+<h4 id="_nfa_union">6.6.1. NFA Union</h4>
+<div class="paragraph"><p>The NFA union operator allows the programmer to create a large union of
+expressions without making the construction fully deterministic. Only a prefix
+is made deterministic, in a breadth-first manner, and up to a specified depth.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>&lt;name&gt; |= ( &lt;depth&gt;, &lt;group-size&gt; ) &lt;expression1&gt; | &lt;expression2&gt; | ... ;</code></pre>
+</div></div>
+<div class="paragraph"><p>The NFA union operator looks like a normal union, except some additional
+controls are specified. The depth value says how deep into the machine the
+NFA-to-DFA algorithm should go looking for NFA states to make deterministic.
+The group-size value allows the programmer to set a limit on the number of
+expressions that are packed into a single DFA prefix. If this value is zero,
+there is no limit, and all expressions go into a single group. If this number
+is less than the number of expressions, there will be an immediate NFA branch
+for the groups, before entering into the DFA prefixes. Roughly speaking,
+group-size allows you to control initial branch width.</p></div>
+<div class="paragraph"><p>By making depth or groups-size smaller, you can shift cost from compile-time to
+run-time to get otherwise intractable unions to build.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_nfa_repetition">6.6.2. NFA Repetition</h4>
+<div class="paragraph"><p>The NFA repetition construct <code>:nfa()</code> is designed to allow counting of objects
+in an ambiguous context. While the <code>:cond()</code> construct is an efficent counting
+method, it does not work properly when there are ambiguities around starting,
+repeating, or exiting a repetition. Since condition tests are embedding into
+transitions, they are made deterministic, therefore the repetition could be
+simultaneously incrementing and exiting the repetition. In these cases the NFA
+repetition is useful, because it will explore all possibilites and allow use
+user to preserve and restore state. To pay for this, you must be willing to
+accept backtracking, however, and also give up non-congiguous buffer blocks.</p></div>
+<div class="paragraph"><p>While the NFA repetition construct is designed for counting, it is useful for
+much more. It generalizes to a state capture/manipulation/test construct that
+works regardless of ambiguities. For example, if there are two possible data
+captures, the :nfa union operator can backtrack to try an alternate. It before
+backtracking it can restore relevant state, then perform the new capture.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>:nfa( &lt;expression&gt;,
+        &lt;push&gt;, &lt;pop&gt;,
+        &lt;init&gt;, &lt;stay&gt;, &lt;repeat&gt;, &lt;exit&gt; ):</code></pre>
+</div></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<code>expression</code> is the ragel-expression that is to be repeated.
+</p>
+</li>
+<li>
+<p>
+<code>push</code> is an action that saves state needed for counting instances of expression.
+</p>
+</li>
+<li>
+<p>
+<code>pop</code> is a condition action that restores state needed for counting instances
+of expression. This is an expression due to a current limitation of the
+implementation. In the future theis may change to a plain action.
+</p>
+</li>
+<li>
+<p>
+<code>init</code> is an condition that is tested before entering the repeat.
+</p>
+</li>
+<li>
+<p>
+<code>stay</code> is an condition that is tested before deciding to stay in the
+expression, as opposed to wrapping around to begin a new expression, or
+exiting. If true, this allows the expression to continue to match, once a final
+state has been entered.
+</p>
+</li>
+<li>
+<p>
+<code>repeat</code> is an condition that is tested before deciding to wrap around and
+attempt a new instance of expression.
+</p>
+</li>
+<li>
+<p>
+<code>exit</code> is an condition that is tested before deciding to leave the repeat
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The following actions achieve a generalized repetition that looks for 10 to 100
+repetitions of some expression. It requires that the count variable be placed
+in the nfa_bp struct. Note that it is correct to reference nfa_len. It does not
+need to manipulated, that is done by the generated code.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action push   { nfa_bp[nfa_len].count = count; }
+action pop    { ({ count = nfa_bp[nfa_len].count; 1; }) }
+action init   { ({ count = 0; 1; }) }
+action stay   { ({ 1; }) }
+action repeat { ({ ++count &lt; 100; }) }
+action exit   { ({ ++count &gt;= 10; }) }</code></pre>
+</div></div>
+<div class="paragraph"><p>The following actions, when used with expression <code>''</code>,  achieve a test of a
+previously stored value (eg. backref). In the exit the stashed value is checked
+against the data at p.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre><code>action init    { ({ 1; }) }
+action stay    { ({ 0; }) }
+action repeat  { ({ 0; }) }
+action exit
+{ ({
+    int match = check_stashed( p, pe, stashed_start, stashed_end );
+    if ( match )
+        p += ( stashed_end - stashed_start );
+    match;
+}) }</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implementing_lookahead">6.7. Implementing Lookahead</h3>
+<div class="paragraph"><p>There are a few strategies for implementing lookahead in Ragel programs.
+Leaving actions, which are described in <a href="#out_actions">Leaving Actions</a>, can be
+used as a form of lookahead.  Ragel also provides the <code>fhold</code> directive
+which can be used in actions to prevent the machine from advancing over the
+current character. It is also possible to manually adjust the current character
+position by shifting it backwards using <code>fexec</code>, however when this is
+done, care must be taken not to overstep the beginning of the current buffer
+block. In both the use of <code>fhold</code> and <code>fexec</code> the user must be
+cautious of combining the resulting machine with another in such a way that the
+transition on which the current position is adjusted is not combined with a
+transition from the other machine.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_parsing_recursive_language_structures">6.8. Parsing Recursive Language Structures</h3>
+<div class="paragraph"><p>In general Ragel cannot handle recursive structures because the grammar is
+interpreted as a regular language. However, depending on what needs to be
+parsed it is sometimes practical to implement the recursive parts using manual
+coding techniques. This often works in cases where the recursive structures are
+simple and easy to recognize, such as in the balancing of parentheses.</p></div>
+<div class="paragraph"><p>One approach to parsing recursive structures is to use actions that increment
+and decrement counters or otherwise recognize the entry to and exit from
+recursive structures and then jump to the appropriate machine defnition using
+<code>fcall</code> and <code>fret</code>. Alternatively, semantic conditions can be used to
+test counter variables.</p></div>
+<div class="paragraph"><p>A more traditional approach is to call a separate parsing function (expressed
+in the host language) when a recursive structure is entered, then later return
+when the end is recognized.</p></div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2017-12-11 15:14:03 UTC
+</div>
+</div>
+</body>
+</html>
